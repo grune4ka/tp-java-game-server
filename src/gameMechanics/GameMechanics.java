@@ -26,14 +26,26 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		
 	public void addUserToGame(int userId) {
 		for (int i = 0; i < gameSessions.size(); i++) {
+			if (gameSessions.get(i).haveUser(userId)) {
+				return;
+			}			
+		}
+		
+		for (int i = 0; i < gameSessions.size(); i++) {
 			if (gameSessions.get(i).haveFreeSlots()) {
 				gameSessions.get(i).addGamer(userId);
+				//mock
+				if (gameSessions.get(i).haveFreeSlots()) {
+					gameSessions.get(i).addGamer(1586);
+				}
 				return;
 			}			
 		}
 		GameSession newSession = new GameSession();
 		newSession.addGamer(userId);
+		newSession.addGamer(1586); //mock
 		gameSessions.add(newSession);
+		
  	}
 		
 	public void updateBoardPosition(int userId, int position) {
@@ -53,6 +65,12 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		return gameSessionSnapshotArray;
 	}
 	
+	private void nextGamesTicks() {
+		for(int i = 0; i < this.gameSessions.size(); i++) {
+			this.gameSessions.get(i).nextTick();
+		}
+	}
+	
 	public void run() {
 		while (true) { 
 			MessageSystem.execForAbonent(this);
@@ -60,6 +78,8 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 					AddressService.getAddressByServiceName("Frontend"), 
 					this.getGameSessionSnapshotArray());
 			MessageSystem.sendMessage(msg);
+			this.nextGamesTicks();
+				
 			TimeHelper.sleep(10);
 		}
 	}
