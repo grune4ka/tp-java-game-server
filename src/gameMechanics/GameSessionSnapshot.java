@@ -1,5 +1,7 @@
 package gameMechanics;
 
+import java.util.HashMap;
+
 public class GameSessionSnapshot {
 	private int idGamer1;
 	private int pointsGamer1;
@@ -19,6 +21,7 @@ public class GameSessionSnapshot {
 			int idGamer2, int pointsGamer2, int positionGamer2,
 			int ballPositionX, int ballPositionY, 
 			boolean active, boolean finish) {
+		
 		this.idGamer1 = idGamer1;
 		this.pointsGamer1 = pointsGamer1;
 		this.positionGamer1 = positionGamer1;
@@ -72,5 +75,21 @@ public class GameSessionSnapshot {
 	}
 	public boolean haveFreeSlots() {
 		return (idGamer1 == -1) || (idGamer2 == -1);
+	}
+	public HashMap<String,String> getHashMapByUserId(int id) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		if (this.idGamer1 == id) {
+			map.put("enemyPosition", new Integer(this.pointsGamer2).toString());
+			map.put("yourPoints", new Integer(this.pointsGamer1).toString());
+			map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
+		}
+		else {
+			map.put("enemyPosition", new Integer(this.pointsGamer1).toString());
+			map.put("yourPoints", new Integer(this.pointsGamer2).toString());
+			map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
+		}
+		map.put("ballXPos", new Integer(this.ballPositionX).toString());
+		map.put("ballYPos", new Integer(this.ballPositionY).toString());
+		return map;
 	}
 }
