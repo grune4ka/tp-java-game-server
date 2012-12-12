@@ -79,17 +79,19 @@ public class GameSessionSnapshot {
 	public HashMap<String,String> getHashMapByUserId(int id) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		if (this.idGamer1 == id) {
-			map.put("enemyPosition", new Integer(this.pointsGamer2).toString());
+			map.put("enemyPosition", new Integer(this.positionGamer2).toString());
 			map.put("yourPoints", new Integer(this.pointsGamer1).toString());
 			map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
+			map.put("ballXPos", new Integer(this.ballPositionX).toString());
+			map.put("ballYPos", new Integer(this.ballPositionY).toString());
 		}
 		else {
-			map.put("enemyPosition", new Integer(this.pointsGamer1).toString());
+			map.put("enemyPosition", new Integer(this.positionGamer1).toString());
 			map.put("yourPoints", new Integer(this.pointsGamer2).toString());
 			map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
+			map.put("ballXPos", new Integer(this.ballPositionX).toString());
+			map.put("ballYPos", new Integer(480 - this.ballPositionY).toString());//to resurce
 		}
-		map.put("ballXPos", new Integer(this.ballPositionX).toString());
-		map.put("ballYPos", new Integer(this.ballPositionY).toString());
 		return map;
 	}
 }
