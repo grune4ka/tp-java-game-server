@@ -3,10 +3,11 @@ var boardPos = 0;
 $(document).ready(function() {
 		$('#game_space').css('background-position -30px -30px');
 		setInterval(function() {
-			$.get("/updateGameData", {'boardPos', boardPos}, function(data) {
+			$.get("/updateGameData", {'boardPos' : boardPos}, function(data) {
 	      	var x = data.ballXPos;
 	      	var y = data.ballYPos;
-				$('#game_space').css('background-position', x + "px " + y + "px");            
+				$('#game_space').css('background-position', x + "px " + y + "px");
+				$('#enemy').css('background-position', data.enemyPosition + "px " +  10 + "px");                        
 	      }, 'json');    
    	}, 25);
 
