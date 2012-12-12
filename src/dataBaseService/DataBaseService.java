@@ -13,7 +13,6 @@ import modules.Abonent;
 import modules.Address;
 import dataBaseService.users.UserDataSet;
 import dataBaseService.users.UsersDAO;
-import dataBaseService.ResultHandler;
 
 public class DataBaseService implements Abonent, Runnable, UsersDAO{
 	private Address address;
@@ -92,7 +91,6 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 					
 				}
 			});
-		
 		return user;
 	}
 
