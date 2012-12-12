@@ -26,6 +26,9 @@ public class GameSession {
 		this.widthGameSpace = 360; // в
 		this.heightGameSpace = 480;// ресурсы
 		
+		this.widthGameSpace -= 20;
+		this.heightGameSpace += 20;
+		
 		this.ballXPosition = this.widthGameSpace / 2;
 		this.ballYPosition = this.heightGameSpace / 2;
 		
@@ -97,37 +100,41 @@ public class GameSession {
 	}
 	
 	public GameSessionSnapshot getGameSessionSnapshot() {
-		int idGamer1;
-		int pointsGamer1;
-		int positionGamer1;
+		int idGamer1 = -1;
+		int pointsGamer1 = -1;
+		int positionGamer1 = -1;
 		
-		int idGamer2;
-		int pointsGamer2;
-		int positionGamer2;
+		int idGamer2 = -1;
+		int pointsGamer2 = -1;
+		int positionGamer2 = -1;
+				
+		if (this.gamer1 != null) {
+			idGamer1 = this.gamer1.getId();
+			pointsGamer1 = this.gamer1.getPoints();
+			positionGamer1 = this.gamer1.getBoardPosition();
+		}
 		
-		int ballPositionX;
-		int ballPositionY;
-		
-		boolean active;
-		boolean finish;
-		
-		
+		if (this.gamer2 != null) {
+			idGamer2 = this.gamer2.getId();
+			pointsGamer2 = this.gamer2.getPoints();
+			positionGamer2 = this.gamer2.getBoardPosition();
+		}
 		
 		
 		GameSessionSnapshot i = new GameSessionSnapshot(
-				gamer1.getId(), gamer1.getPoints(), gamer1.getBoardPosition(),
-				gamer2.getId(), gamer2.getPoints(), gamer2.getBoardPosition(), 
+				idGamer1, pointsGamer1, positionGamer1,
+				idGamer2, pointsGamer2, positionGamer2, 
 				this.ballXPosition, this.ballYPosition, 
 				this.active, this.finish);
 		return i;
 	}
 	
-	public void nextTickSession() {
+	public void nextTick() {
 		if (this.ballXPosition == 0 || this.ballXPosition == this.widthGameSpace) {
 			this.ballVector[0] = - this.ballVector[0]; 
 		}
 		
-		if (this.ballYPosition == 0 || this.ballYPosition == this.heightGameSpace) {
+		if (this.ballYPosition == -30 || this.ballYPosition == this.heightGameSpace) {
 			this.ballVector[1] = - this.ballVector[1];
 		}
 		this.ballXPosition += this.ballVector[0];
