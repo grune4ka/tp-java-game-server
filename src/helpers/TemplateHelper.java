@@ -45,7 +45,6 @@ public class TemplateHelper {
 			e.printStackTrace();
 		}
 	}
-	
 		
 	public static void renderTemplate(String name, Map map_arg, Writer out) {
 		Template template;
@@ -65,6 +64,19 @@ public class TemplateHelper {
 			template = cfg.getTemplate(name);
 			Map<String, String> map = new  HashMap<String, String>();
 			map.put("userName", userName);
+			template.process(map, out);
+		} catch (IOException | TemplateException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void renderTemplate(String name, String userName, Map map_arg, Writer out) {
+		Template template;
+		try {
+			template = cfg.getTemplate(name);
+			Map map = new  HashMap();
+			map.put("userName", userName);
+			map.putAll(map_arg);
 			template.process(map, out);
 		} catch (IOException | TemplateException e) {
 			e.printStackTrace();
