@@ -2,6 +2,7 @@ package frontend;
 
 import gameMechanics.GameSessionSnapshot;
 import gameMechanics.MsgConnectUserToGame;
+import gameMechanics.MsgUpdateBoardPosition;
 import helpers.CookieHelper;
 import helpers.TemplateHelper;
 import helpers.TimeHelper;
@@ -355,6 +356,15 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 			response.sendRedirect("/join");
 			return;
 		}
+		String boardPosition = request.getParameter("boardPos");
+		if (boardPosition != null) {
+			int intBoardPosition = Integer.parseInt(boardPosition);
+			MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(), 
+					AddressService.getAddressByServiceName("GameMechanics"), 
+					userId, intBoardPosition);
+			MessageSystem.sendMessage(msg);
+		}
+		
 		GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
 		JSONObject obj = new JSONObject();			
 		obj.putAll(snapshot.getHashMapByUserId(userId));
