@@ -87,7 +87,16 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	private boolean isBothUserInGame(int userId) {
 		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
 			if (this.gameSessionSnapshots[i].hasUser(userId) == true 
-					&& this.gameSessionSnapshots[i]) {
+					&& !this.gameSessionSnapshots[i].haveFreeSlots()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isUserJoinInGameSession(int userId) {
+		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
+			if (this.gameSessionSnapshots[i].hasUser(userId) == true) {
 				return true;
 			}
 		}
@@ -297,9 +306,14 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		int userId = this.userIdByRequest(baseRequest);
 		if (userId > 0) {
 			if (this.isBothUserInGame(userId) == true) {
-				
+				TemplateHelper.renderTemplate("game.html", 
+						this.userNameById.get(userId), 
+						response.getWriter());
 			}
 			else {
+				if (!this.isUserJoinInGameSession(userId)) {
+					this.connectUserToGame(userId);
+				}
 				TemplateHelper.renderTemplate("wait.html", 
 						this.userNameById.get(userId), 
 						response.getWriter());
@@ -314,15 +328,9 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	public void isGameActive(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		String sessionId = CookieHelper.getCookie(baseRequest.getCookies(),
-				"sessionId");
 		boolean isGameActive = false;
-		JSONObject obj = new JSONObject();
-		if (sessionId != null) {
-			if (this.isSessionActive(sessionId)) {
-				isGameActive = this.isUserInGame(this.userIdBySessionId(sessionId));
-			}
-		}
+		JSONObject obj = new JSONObject();			
+		isGameActive = this.isBothUserInGame(this.userIdByRequest(baseRequest));
 		obj.put("isGameActive", isGameActive);
 		response.getWriter().print(obj);
 	}
@@ -357,7 +365,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	public void run() {
 		while (true) {
 			MessageSystem.execForAbonent(this);
-			TimeHelper.sleep(10);
+			//TimeHelper.sleep(10);
 		}
 	}
 }
