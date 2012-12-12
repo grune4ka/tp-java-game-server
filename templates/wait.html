@@ -1,26 +1,29 @@
 <html>
     <head>
-        <title>Технопарк@Игры - Главная</title>
-        <script type="text/javascript" src="/js/jquery.js"></script>
-        <link media="all" href="/css/wait.css" rel="stylesheet" type="text/css">
-        <script>
-            setInterval(function() {
-                $.get("/isGameActive", function(data) {
-                        if (data.isGameActive) {
-                            window.location.reload();
-                        }
-                }, 'json');    
-            }, 100);
-            setInterval(function() {
-                $("#wait").text($("#wait").text()+".");
-                if ($("#wait").text() == "Wait....") {
-                    $("#wait").text("Wait");
-                }
-            }, 1000);
-        </script>
+    	<title>Технопарк@Игры - Главная</title>
+		<link type="text/css" rel="stylesheet" href="css/base.css"/>
+		<link type="text/css" rel="stylesheet" href="css/nav.css"/>
+      <script type="text/javascript" src="/js/jquery.js"></script>
+      <link media="all" href="/css/wait.css" rel="stylesheet" type="text/css">
+      <script>
+	      setInterval(function() {
+	         $.get("/isGameActive", function(data) {
+	            if (data.isGameActive) {
+	               window.location.reload();
+               }
+	         }, 'json');    
+   		}, 100);
+         setInterval(function() {
+      	   $("#wait").text($("#wait").text()+".");
+      		if ($("#wait").text() == "Wait....") {
+      	      $("#wait").text("Wait");
+            }
+         }, 1000);
+      </script>
     </head>
     <body>
-        <div id="logo"><img src="/img/logo.jpg"></div>
+        <#include "nav.html">
+        <#include "logo.html">
         <p id="wait">Wait</p>
     </body>
 </html>
