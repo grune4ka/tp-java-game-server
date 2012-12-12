@@ -3,28 +3,21 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Теннис - Игры@Технопарк</title>
-        <link type="text/css" rel="stylesheet" href="css/game.css"/>
-        <link type="text/css" rel="stylesheet" href="css/game_zone.css"/>
-   		<script type="application/javascript" src="js/jquery.js"></script>
-        <script type="application/javascript" src="js/game.js"></script>
 
+		<link type="text/css" rel="stylesheet" href="css/base.css"/>
+		<link type="text/css" rel="stylesheet" href="css/nav.css"/>
+
+		<link type="text/css" rel="stylesheet" href="css/game.css"/>
+      <link type="text/css" rel="stylesheet" href="css/game_zone.css"/>
+
+   	<script type="application/javascript" src="js/jquery.js"></script>
+      <script type="application/javascript" src="js/game.js"></script>
 	</head>
 	<body>
-    	<div id="nav_menu">
-        	<ul>
-            	<li><a href="http://mail.ru">Mail.Ru</a></li>
-                <li><a href="http://tp.mail.ru">Технопарк</a></li>
-                <li><a href="/">Игры</a></li>
-                <li><a>Серверы</a></li>
-                <li><a>Базы данных</a></li>
-            </ul>
-            <p id="join_link"><a href="/join">Вход</a></p>
-        </div>
-    	<div style="text-align:center;">
-        	<img src="img/logo.jpg"/>
-        </div>
-        
-    	<div id="game_space">
+    	<#include "nav.html">
+		<#include "logo.html">
+         
+    	<div id="game_space" style="border: 1px solid;">
 			<div id="enemy">
 			</div>
 			<div id="space_between"></div>
