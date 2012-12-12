@@ -18,14 +18,14 @@ public class MessageSystem {
 		messageQueue.add(message);
 		String strFrom = AddressService.getServiceNameByAddress(message.getFrom());
 		String strTo = AddressService.getServiceNameByAddress(message.getTo());
-		if (strFrom == "GameMechanics" && strTo == "Frontend") {
+		/*if (strFrom == "GameMechanics" && strTo == "Frontend") {
 			if (flag) {
 				System.out.println("Работает постоянная пересылка сообщений от " + strFrom + " к " + strTo);
 			}
 			flag = false;
 			return;
 		} 
-		System.out.println("Добавлено сообщение от " + strFrom + " к " + strTo);
+		System.out.println("Добавлено сообщение от " + strFrom + " к " + strTo);*/
 	}
 	public static void addService (Abonent abonent) {
 		messages.put(abonent.getAddress(), new ArrayBlockingQueue<Msg>(1024));
