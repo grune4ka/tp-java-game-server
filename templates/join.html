@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link type="text/css" rel="stylesheet" href="css/base.css"/>
+		<link type="text/css" rel="stylesheet" href="css/nav.css"/>
+		<link type="text/css" rel="stylesheet" href="css/join.css"/>
+	</head>
+	<body>
+		<#include "nav.html">
+		<#include "logo.html">
+		<div id="form">
+			<form action="/join" method="post">
+				<table>
+					<tr>
+						<td class="td_label">Логин</td>
+		   		   <td><input name="login" type="input" value=""/></td>
+					</tr>
+					<tr>
+						<td class="td_label">Пароль</td>
+						<td><input name="password" type="password" value=""/></td>
+					</tr>
+					<#if wrongData??>
+					<tr class="center">
+						<td style="text-align: center;" colspan="2">
+											
+							<p style="text-align: center; color: #F00;">Неверный логин или пароль</p>
+					
+						</td>
+					<tr>
+ 					</#if>
+						<td class="center" colspan="2" style="padding-top: 5px;"><input type="submit" value="Войти" style="width: 75px;"></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</body>
+</html>

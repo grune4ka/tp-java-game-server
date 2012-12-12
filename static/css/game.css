@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+
+#game_space {
+	margin: 0 auto;
+	width: 360px;
+	height: 480px;
+}
+
+

@@ -1,0 +1,42 @@
+* {
+    margin: 0;
+    padding: 0;
+ }
+ 
+h2, li {
+    text-align: center;
+}
+
+a:link {
+    color: #000;
+}
+
+a:visited {
+    color: #000;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+}
+
+.game {
+	height: 200px;
+	width: 350px;
+	border: 1px solid;
+	display: table;
+}
+
+.game_label {
+	height: 20px;
+	width: inherit;
+	position: fixed;
+	color: #000;
+	background-color: #FFF;
+	font: 14px Arial,sans-serif;
+	text-align: center;
+}
+

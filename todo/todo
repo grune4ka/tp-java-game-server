@@ -1,0 +1,6 @@
+1) Объединить с GameMechanic в одну сущность
+2) Работа с датой deprecated
+3) Frontend 343 строка
+4) TimerHelper
+5) Изменить структуру реплики на Frontend
+6) Масштабируемость GameSession

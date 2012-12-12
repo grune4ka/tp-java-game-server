@@ -1,0 +1,21 @@
+form, h2, p {
+    text-align: center;
+}
+
+td {
+	text-align: left;
+	font: 14px Arial,sans-serif;
+}
+
+table {
+	padding-left: 30px;
+	padding-top: 10px;
+}
+
+.center {
+	text-align: center !important;
+} 
+
+.td_label {
+	padding-right: 5px;
+}

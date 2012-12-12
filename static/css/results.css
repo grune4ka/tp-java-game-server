@@ -1,0 +1,23 @@
+#main {
+    width: 100%;
+    text-align: center;
+}
+
+td {
+    width: 50%;
+    vertical-align: top;
+}
+
+.points {
+    font: 48pt arial;
+}
+
+.nicks {
+    font: 18pt sans-serif;
+}
+
+#send {
+    width: 250px;
+    height: 100px;
+    font-size: 20pt;
+}

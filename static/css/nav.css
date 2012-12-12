@@ -1,0 +1,48 @@
+#nav_menu {
+	padding-left: 20px;
+	padding-top: 5px;
+}
+
+#nav_menu li {
+	float: left;
+	padding-right: 10px;
+}
+
+#nav_menu ul {
+	float: left;
+	list-style-type:none;
+}
+
+.join_zone {
+	text-align: right;
+	padding-right: 20px;
+}
+
+.nav_link:link {
+	color:#0857A6;
+	font: 12px/16px Arial,sans-serif;
+}
+
+.nav_link:visited {
+	color:#0857A6;
+	font: 12px/16px Arial,sans-serif;
+}
+
+.nav_link:hover {
+	color:#F60;
+	font: 12px/16px Arial,sans-serif;
+}
+
+.nav_link {
+	text-decoration:none;
+	color:#0857A6;
+	font: 12px/16px Arial,sans-serif;
+}
+
+.join_zone:hover span {
+	color: #000 !important;
+}
+
+.join_zone span {
+	color: #000 !important;
+}

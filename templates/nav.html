@@ -1,0 +1,15 @@
+<div id="nav_menu">
+	<ul>
+		<li><a class="nav_link" style="font-weight: bold;" href="http://mail.ru">Mail.Ru</a></li>
+		<li><a class="nav_link" href="http://tp.mail.ru">Технопарк</a></li>
+		<li><a class="nav_link" href="/">Игры</a></li>
+		<li><a class="nav_link">Серверы</a></li>
+		<li><a class="nav_link">Базы данных</a></li>
+	</ul>
+	<#if !(userName??)>			
+		<p class="join_zone"><a class="nav_link" href="/join">Вход</a></p>
+	<#else>
+			<p class="join_zone"><span class="nav_link">${userName}</span><a href="/logout" class="nav_link"> Выйти</a></p>
+	</#if>			
+</div>
+

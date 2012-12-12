@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>Технопарк@Игры - Главная</title>
+        <meta http-equiv="Cache-control" content="no-cache"> 
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <link media="all" href="/css/game.css" rel="stylesheet" type="text/css">
+        <script>
+            $(document).ready(function() {
+                    $.get("/updateGamers?results=1", function(data) {
+                        $('#yourName').text(data.yourName);
+                        $('#yourPoints').text(data.yourPoints);
+                        $('#enemyName').text(data.enemyName);
+                        $('#enemyPoints').text(data.enemyPoints);
+                    }, 'json');
+            });
+            function toJoin() {
+                window.location = "/join";
+            }
+        </script>
+    </head>
+    <body>
+    
+        <div id="logo"><img src="/img/logo.jpg"></div>
+        <table id="main">
+            <tr>
+                <td id="firstGamer">
+                    <p class="nicks" id="yourName"></p>
+                    <p class="points" id="yourPoints"></p>
+                </td>
+                <td id="secondGamer">
+                    <p class="nicks" id="enemyName"></p>
+                    <p class="points" id="enemyPoints"></p>
+                </td>
+            </tr>
+        </table>
+        <button onClick="toJoin();">Play Again!</button>
+    </body>
+</html>
+
