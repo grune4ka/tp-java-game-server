@@ -130,14 +130,25 @@ public class GameSession {
 	}
 	
 	public void nextTick() {
-		if (this.ballXPosition == 0 || this.ballXPosition == this.widthGameSpace) {
-			this.ballVector[0] = - this.ballVector[0]; 
-		}
+		if (!this.haveFreeSlots()){
+			if (this.ballXPosition == 0 || this.ballXPosition == this.widthGameSpace) {
+				this.ballVector[0] = - this.ballVector[0]; 
+			}
 		
-		if (this.ballYPosition == -30 || this.ballYPosition == this.heightGameSpace) {
-			this.ballVector[1] = - this.ballVector[1];
+			if (this.ballYPosition == -30 || this.ballYPosition == this.heightGameSpace) {
+				this.ballVector[1] = - this.ballVector[1];
+			}
+		
+			if (this.ballYPosition == 0 || (this.gamer1.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer1.getBoardPosition() + 30)) {
+				this.ballVector[1] = - this.ballVector[1];
+			}
+		
+			if (this.ballYPosition == this.heightGameSpace - 30 || (this.gamer2.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer2.getBoardPosition() + 30)) {
+				this.ballVector[1] = - this.ballVector[1];
+			}
+		
+			this.ballXPosition += this.ballVector[0];
+			this.ballYPosition += this.ballVector[1];
 		}
-		this.ballXPosition += this.ballVector[0];
-		this.ballYPosition += this.ballVector[1];
 	}
 }
