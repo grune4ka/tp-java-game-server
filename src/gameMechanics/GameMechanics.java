@@ -34,16 +34,16 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		for (int i = 0; i < gameSessions.size(); i++) {
 			if (gameSessions.get(i).haveFreeSlots()) {
 				gameSessions.get(i).addGamer(userId);
-				//mock
+				/*//mock
 				if (gameSessions.get(i).haveFreeSlots()) {
 					gameSessions.get(i).addGamer(1586);
-				}
+				}*/
 				return;
 			}			
 		}
 		GameSession newSession = new GameSession();
 		newSession.addGamer(userId);
-		newSession.addGamer(1586); //mock
+		/*newSession.addGamer(1586); //mock*/
 		gameSessions.add(newSession);
 		
  	}
