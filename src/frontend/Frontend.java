@@ -1,6 +1,5 @@
 package frontend;
 
-import freemarker.template.TemplateException;
 import gameMechanics.GameSessionSnapshot;
 import gameMechanics.MsgConnectUserToGame;
 import helpers.CookieHelper;
@@ -171,6 +170,14 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return md.digest().toString();
 	}
 	
+	private GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
+		for(int i = 0; i < gameSessionSnapshots.length; i++) {
+			if (gameSessionSnapshots[i].hasUser(userId)) {
+				return gameSessionSnapshots[i];
+			}
+		}
+		return null;
+	}
 	@Override
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
@@ -183,13 +190,13 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		response.setHeader("Expires", TimeHelper.getGMT());
 
 		if (target.equals("/")) {
-			welcome(target, baseRequest, request, response);
+			this.welcome(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
 		}
 
 		if (target.equals("/join")) {
-			join(target, baseRequest, request, response);
+			this.join(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
 		}
@@ -201,20 +208,25 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		}
 
 		if (target.equals("/game")) {
-			game(target, baseRequest, request, response);
+			this.game(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
 		}
 		
 		if (target.equals("/isGameActive")) {
-			isGameActive(target, baseRequest, request, response);
+			this.isGameActive(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
 		}
 		
+		if (target.equals("/updateGameData")) {
+			this.updateGameData(target, baseRequest, request, response);
+			baseRequest.setHandled(true);
+			return;
+		}
 		
 		if (target.equals("/logout")) {
-			logout(target, baseRequest, request, response);
+			this.logout(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
 		}
@@ -229,7 +241,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void welcome(String target, Request baseRequest,
+	private void welcome(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String userName = this.userNameByRequest(baseRequest); 
@@ -242,7 +254,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void join(String target, Request baseRequest,
+	private void join(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String sessionId = CookieHelper.getCookie(request.getCookies(),"sessionId");
@@ -281,7 +293,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void isJoin(String target, Request baseRequest,
+	private void isJoin(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String sessionId = CookieHelper.getCookie(baseRequest.getCookies(),
@@ -300,7 +312,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void game(String target, Request baseRequest,
+	private void game(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		int userId = this.userIdByRequest(baseRequest);
@@ -325,7 +337,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void isGameActive(String target, Request baseRequest,
+	private void isGameActive(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		boolean isGameActive = false;
@@ -336,13 +348,27 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	@Responder
-	public void results(String target, Request baseRequest,
+	private void updateGameData(String target, Request baseRequest,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
+		int userId = this.userIdByRequest(baseRequest);
+		if (userId <= 0) {
+			response.sendRedirect("/join");
+			return;
+		}
+		GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
+		JSONObject obj = new JSONObject();			
+		obj.putAll(snapshot.getHashMapByUserId(userId));
+		response.getWriter().print(obj);
+	}
+	
+	@Responder
+	private void results(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 	}
 	
 	@Responder
-	public void logout(String target, Request baseRequest,
+	private void logout(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String sessionId = CookieHelper.getCookie(baseRequest.getCookies(), "sessionId");
@@ -365,7 +391,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	public void run() {
 		while (true) {
 			MessageSystem.execForAbonent(this);
-			//TimeHelper.sleep(10);
+			TimeHelper.sleep(10);
 		}
 	}
 }
