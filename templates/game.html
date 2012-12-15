@@ -16,13 +16,18 @@
 	<body>
     	<#include "nav.html">
 		<#include "logo.html">
-         
-    	<div id="game_space" style="border: 1px solid;">
-			<div id="enemy">
-			</div>
-			<div id="space_between"></div>
-			<div id="me">
-			</div>
-    	</div>
+      <table style="margin: 0 auto;">
+			<tr>
+				<td><p class="points" id="yourPoints">0</p></td>   
+				<td>
+			    	<div id="game_space" style="border: 1px solid;">
+						<div id="enemy"></div>
+						<div id="space_between"></div>
+						<div id="me"></div>
+			    	</div>
+				</td>
+				<td><p class="points" id="enemyPoints">0</p></td>
+			</tr>
+		</table>
 	</body>
 </html>

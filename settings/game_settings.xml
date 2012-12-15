@@ -1,0 +1,10 @@
+<gameServer.GameSettings>
+  <winCounts>1000</winCounts>
+  <widthGameField>360</widthGameField>
+  <heigthGameField>480</heigthGameField>
+  <failWait>1000</failWait>
+  <vector>
+    <int>4</int>
+    <int>4</int>
+  </vector>
+</gameServer.GameSettings>

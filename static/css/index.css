@@ -33,9 +33,9 @@ a {
 .game_label {
 	height: 20px;
 	width: inherit;
-	position: fixed;
+	position: relative;
 	color: #000;
-	background-color: #FFF;
+	background-color: #EEE;
 	font: 14px Arial,sans-serif;
 	text-align: center;
 }

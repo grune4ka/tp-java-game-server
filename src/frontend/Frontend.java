@@ -4,6 +4,7 @@ import gameMechanics.GameSessionSnapshot;
 import gameMechanics.MsgConnectUserToGame;
 import gameMechanics.MsgUpdateBoardPosition;
 import helpers.CookieHelper;
+import helpers.ParseHelper;
 import helpers.TemplateHelper;
 import helpers.TimeHelper;
 
@@ -53,6 +54,11 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 
 	public void updateUserId(String sessionId, Integer userId, String nick) {
 		if (userId > 0) {
+			if (sessionInformation.containsValue(userId)) {
+				sessionInformation.put(sessionId, -4);
+				System.out.println("Cессия " + sessionId + ": доступ запрещен. Повторная авторизация.");
+				return;
+			}
 			sessionInformation.put(sessionId, userId);
 			userNameById.put(userId, nick);
 			System.out.println("К сессии '" + sessionId + "' добавлен userId "
@@ -83,7 +89,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 						AddressService.getAddressByServiceName("GameMechanics"),
 						userId));
 	}
-
+	
 	private boolean isBothUserInGame(int userId) {
 		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
 			if (this.gameSessionSnapshots[i].hasUser(userId) == true 
@@ -129,19 +135,6 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return -42;
 	}
 	
-	private boolean isAuthByRequest(Request request) {
-		String sessionId = CookieHelper.getCookie(request.getCookies(), "sessionId");
-		if (sessionId != null) {
-			if (sessionInformation.containsKey(sessionId)) {
-				int id = sessionInformation.get(sessionId);
-				if (id > 0) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	private void addSession(String sessionId) {
 		sessionInformation.put(sessionId, -2);
 	}
@@ -179,6 +172,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		}
 		return null;
 	}
+	
 	@Override
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
@@ -272,6 +266,12 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 				response.sendRedirect("/");
 				return;
 			}
+			else if (this.userIdBySessionId(sessionId) == -4) {
+				Map<String, Boolean> map = new HashMap<String, Boolean>();
+				map.put("alreadyJoin", true);
+				TemplateHelper.renderTemplate("join.html", map, response.getWriter());
+				this.sessionInformation.put(sessionId, -2);
+			}
 			else if (this.userIdBySessionId(sessionId) == -3) {
 				Map<String, Boolean> map = new HashMap<String, Boolean>();
 				map.put("wrongData", true);
@@ -283,10 +283,11 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 				String	password = request.getParameter("password");
 				if (login == null || password == null) {
 					TemplateHelper.renderTemplate("join.html", response.getWriter());
-					return;
 				}
-				this.sendRequestToUpdateUserId(sessionId, login, password);
-				TemplateHelper.renderTemplate("waitAuth.html", response.getWriter());
+				else {
+					this.sendRequestToUpdateUserId(sessionId, login, password);
+					TemplateHelper.renderTemplate("waitAuth.html", response.getWriter());
+				}
 			} else if (this.userIdBySessionId(sessionId) == -1) {
 				TemplateHelper.renderTemplate("waitAuth.html", response.getWriter());
 			}
@@ -303,7 +304,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		JSONObject obj = new JSONObject();
 		if (sessionId != null) {
 			if (this.isSessionActive(sessionId)) {
-				if (this.userIdBySessionId(sessionId) > 0 || this.userIdBySessionId(sessionId) == -3) {
+				if (this.userIdBySessionId(sessionId) > 0 || this.userIdBySessionId(sessionId) == -3 || this.userIdBySessionId(sessionId) == -4) {
 					isJoin = true;
 				}
 			}
@@ -358,7 +359,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		}
 		String boardPosition = request.getParameter("boardPos");
 		if (boardPosition != null) {
-			int intBoardPosition = Integer.parseInt(boardPosition);
+			int intBoardPosition = ParseHelper.strToInt(boardPosition);
 			MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(), 
 					AddressService.getAddressByServiceName("GameMechanics"), 
 					userId, intBoardPosition);
@@ -375,6 +376,18 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	private void results(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
+		String mePoints = request.getParameter("me");
+		String enemyPoints = request.getParameter("enemy");
+		if (mePoints == null) {
+			mePoints = "";
+		}
+		if (enemyPoints == null) {
+			enemyPoints = "";
+		}
+		HashMap<String, String> results = new HashMap<String, String>();
+		results.put("me", mePoints);
+		results.put("enemy", enemyPoints);
+		TemplateHelper.renderTemplate("results.html", userNameByRequest(baseRequest), results, response.getWriter());
 	}
 	
 	@Responder
@@ -387,6 +400,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 				int id = sessionInformation.get(sessionId);
 				if (id > 0) {
 					if (userNameById.containsKey(id)) {
+						System.out.println("Пользователь #"+id+" (Сессия " + sessionId+") вышел из системы");
 						userNameById.remove(id);
 						sessionInformation.remove(sessionId);
 						response.sendRedirect("/");
@@ -401,7 +415,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	public void run() {
 		while (true) {
 			MessageSystem.execForAbonent(this);
-			TimeHelper.sleep(10);
+			TimeHelper.sleep(50);
 		}
 	}
 }

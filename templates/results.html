@@ -1,39 +1,33 @@
 <html>
     <head>
-        <title>Технопарк@Игры - Главная</title>
-        <meta http-equiv="Cache-control" content="no-cache"> 
-        <script type="text/javascript" src="/js/jquery.js"></script>
-        <link media="all" href="/css/game.css" rel="stylesheet" type="text/css">
-        <script>
-            $(document).ready(function() {
-                    $.get("/updateGamers?results=1", function(data) {
-                        $('#yourName').text(data.yourName);
-                        $('#yourPoints').text(data.yourPoints);
-                        $('#enemyName').text(data.enemyName);
-                        $('#enemyPoints').text(data.enemyPoints);
-                    }, 'json');
-            });
-            function toJoin() {
-                window.location = "/join";
-            }
-        </script>
+			<title>Технопарк@Игры - Главная</title>
+			<meta http-equiv="Cache-control" content="no-cache"> 
+			<script type="text/javascript" src="/js/jquery.js"></script>
+			<link type="text/css" rel="stylesheet" href="css/base.css"/>
+			<link type="text/css" rel="stylesheet" href="css/nav.css"/>
+			<link type="text/css" rel="stylesheet" href="css/results.css"/>
+			<script>
+				function go() {
+					window.location = "/game";
+				}
+			</script>
     </head>
     <body>
-    
-        <div id="logo"><img src="/img/logo.jpg"></div>
-        <table id="main">
-            <tr>
-                <td id="firstGamer">
-                    <p class="nicks" id="yourName"></p>
-                    <p class="points" id="yourPoints"></p>
-                </td>
-                <td id="secondGamer">
-                    <p class="nicks" id="enemyName"></p>
-                    <p class="points" id="enemyPoints"></p>
-                </td>
-            </tr>
-        </table>
-        <button onClick="toJoin();">Play Again!</button>
-    </body>
+		<#include "nav.html">
+		<#include "logo.html">
+		<table>
+			<tr>
+				<td><p class="names">Вы</p></td>
+				<td><p class="names">Не вы</p></td>
+			</tr>
+			<tr>
+				<td><p class="names">${me}</p></td>
+				<td><p class="names">${enemy}</p></td>
+			</tr>
+			<tr>
+				<td colspan=2><button onclick="go();">Еще!</button></td>
+			</tr>
+		</table>
+	</body>
 </html>
 

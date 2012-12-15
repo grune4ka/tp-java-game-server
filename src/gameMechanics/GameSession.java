@@ -1,5 +1,8 @@
 package gameMechanics;
 
+import gameServer.GameSettings;
+import resources.ResourceFactory;
+
 
 public class GameSession {
 	private Gamer gamer1;
@@ -8,13 +11,14 @@ public class GameSession {
 	private boolean active;
 	private boolean finish;
 	
+	private long finishTime = 0;
+	
 	private int ballXPosition;
 	private int ballYPosition;
-	
-	private int widthGameSpace;
-	private int heightGameSpace;
-	
-	private int[] ballVector;
+		
+	private long waiter = 0;
+		
+	private GameSettings settings;
 	
 	public GameSession() {
 		this.gamer1 = null;
@@ -23,17 +27,36 @@ public class GameSession {
 		this.active = false;
 		this.finish = false;
 		
-		this.widthGameSpace = 360; // в
-		this.heightGameSpace = 480;// ресурсы
+		this.settings = (GameSettings) ResourceFactory.instanse()
+				.getResource("settings/game_settings.xml");
+				
+		this.settings.widthGameField -= 20;
+		this.settings.heigthGameField += 20;
 		
-		this.widthGameSpace -= 20;
-		this.heightGameSpace += 20;
-		
-		this.ballXPosition = this.widthGameSpace / 2;
-		this.ballYPosition = this.heightGameSpace / 2;
-		
-		int[] ballVector = {1,1};
-		this.ballVector = ballVector;
+		this.ballXPosition = this.settings.widthGameField / 2;
+		this.ballYPosition = this.settings.heigthGameField / 2;
+	}
+	
+	public boolean canRemove() {
+		if (System.currentTimeMillis() - this.finishTime > 1000 && this.finishTime != 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private void setWaiter() {
+		this.waiter = System.currentTimeMillis();
+	}
+	
+	private boolean isWait() {
+		if (System.currentTimeMillis() - this.waiter < this.settings.failWait && this.waiter != 0) {
+			return true;		
+		}
+		else {
+			return false;
+		}
 	}
 	
 	public boolean addGamer(int id) {
@@ -86,10 +109,18 @@ public class GameSession {
 	}
 	
 	public boolean isGameEnd() {
-		if (gamer1.getPoints() > 7 || gamer2.getPoints() > 7) { //вынести 7ку в ресурсы.
-			this.active = false;
-			this.finish = true;
-			return true;
+		if (this.gamer1 != null && this.gamer2 != null) {
+			if (gamer1.getPoints() >= this.settings.winCounts || gamer2.getPoints() >= this.settings.winCounts) { //вынести 7ку в ресурсы.
+				this.active = false;
+				if (this.finish == false) {
+					this.finishTime = System.currentTimeMillis();
+				}
+				this.finish = true;
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -125,30 +156,46 @@ public class GameSession {
 				idGamer1, pointsGamer1, positionGamer1,
 				idGamer2, pointsGamer2, positionGamer2, 
 				this.ballXPosition, this.ballYPosition, 
-				this.active, this.finish);
+				this.active, this.isGameEnd());
 		return i;
 	}
 	
 	public void nextTick() {
-		if (!this.haveFreeSlots()){
-			if (this.ballXPosition == 0 || this.ballXPosition == this.widthGameSpace) {
-				this.ballVector[0] = - this.ballVector[0]; 
+		if (!this.haveFreeSlots() && !this.isGameEnd() && !this.isWait()){
+			if (this.ballXPosition < 0 || this.ballXPosition > this.settings.widthGameField) {
+				this.settings.vector[0] = - this.settings.vector[0]; 
 			}
-		
-			if (this.ballYPosition == -30 || this.ballYPosition == this.heightGameSpace) {
-				this.ballVector[1] = - this.ballVector[1];
+			if (this.ballYPosition < 50 ) {
+				if (this.gamer2.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer2.getBoardPosition() + 30) {
+					if (this.settings.vector[1] < 0) {
+						this.settings.vector[1] = - this.settings.vector[1];
+					}
+				}
+				else {
+					this.gamer1.setPoints(this.gamer1.getPoints() + 1);
+					this.ballXPosition = this.settings.widthGameField / 2;
+					this.ballYPosition = this.settings.heigthGameField / 2;
+					this.setWaiter();
+					return;
+				}
 			}
-		
-			if (this.ballYPosition == 0 || (this.gamer1.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer1.getBoardPosition() + 30)) {
-				this.ballVector[1] = - this.ballVector[1];
-			}
-		
-			if (this.ballYPosition == this.heightGameSpace - 30 || (this.gamer2.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer2.getBoardPosition() + 30)) {
-				this.ballVector[1] = - this.ballVector[1];
-			}
-		
-			this.ballXPosition += this.ballVector[0];
-			this.ballYPosition += this.ballVector[1];
+			
+			if (this.ballYPosition > this.settings.heigthGameField - 70) {
+				if ((this.gamer1.getBoardPosition() - 30  < this.ballXPosition && this.ballXPosition < this.gamer1.getBoardPosition() + 30)) {
+					if (this.settings.vector[1] > 0) {
+						this.settings.vector[1] = - this.settings.vector[1];
+					}
+				}
+				else {
+					this.gamer2.setPoints(this.gamer2.getPoints() + 1);
+					this.ballXPosition = this.settings.widthGameField / 2;
+					this.ballYPosition = this.settings.heigthGameField/ 2;
+					this.setWaiter();
+					return;
+				}
+			}			
+			this.ballXPosition += this.settings.vector[0];
+			this.ballYPosition += this.settings.vector[1];
 		}
 	}
 }

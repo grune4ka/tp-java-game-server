@@ -16,8 +16,7 @@ public class TemplateHelper {
 	private static Configuration cfg = new Configuration();
 	public static void init() {
 			try {
-				cfg.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/templates"));
-				
+				cfg.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/templates"));				
 			} catch (IOException e) {
 				e.printStackTrace();
 				Logger logger = Logger.getLogger(Frontend.class.toString());
