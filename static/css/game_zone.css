@@ -2,20 +2,21 @@
 /* CSS Document */
 
 #me, #enemy {
-	height: 30px;
 	background:url(../img/board.gif) 0 0 no-repeat;
 }
 
 #me {
-	background-position: 40px 0px;
+	height: 55px;
+	background-position: 40px -10px;
 }
 
 #enemy {
-	background-position: 20px 10px;
+	height: 35px;
+	background-position: 20px 0px;
 }
 
 #space_between {
-	height: 420px; /*480 - 2 x 20*/
+	height: 400px; /*480 - 2 x 20*/
 }
 
 #game_space {
