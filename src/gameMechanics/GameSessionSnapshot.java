@@ -78,6 +78,21 @@ public class GameSessionSnapshot {
 	}
 	public HashMap<String,String> getHashMapByUserId(int id) {
 		HashMap<String, String> map = new HashMap<String, String>();
+		if (this.finish) {
+			map.put("results", new Boolean(true).toString());
+			if (this.idGamer1 == id) {
+				map.put("yourPoints", new Integer(this.pointsGamer1).toString());
+				map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
+			}
+			else {
+				map.put("yourPoints", new Integer(this.pointsGamer2).toString());
+				map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
+			}
+			return map;
+		}
+		else {
+			map.put("results", new Boolean(false).toString());
+		}
 		if (this.idGamer1 == id) {
 			map.put("enemyPosition", new Integer(this.positionGamer2).toString());
 			map.put("yourPoints", new Integer(this.pointsGamer1).toString());
