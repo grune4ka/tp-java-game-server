@@ -41,7 +41,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		
 		while (true) { 			
 			MessageSystem.execForAbonent(this);
-			TimeHelper.sleep(10);
+			TimeHelper.sleep(50);
 		}
 	}
 
