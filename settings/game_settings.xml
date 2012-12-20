@@ -1,5 +1,5 @@
 <gameServer.GameSettings>
-  <winCounts>1000</winCounts>
+  <winCounts>5</winCounts>
   <widthGameField>360</widthGameField>
   <heigthGameField>480</heigthGameField>
   <failWait>1000</failWait>
