@@ -27,7 +27,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		try {
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC").newInstance(); //имя драйвера в ресурсы
 			DriverManager.registerDriver(driver);
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

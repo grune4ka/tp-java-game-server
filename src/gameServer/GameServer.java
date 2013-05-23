@@ -26,7 +26,7 @@ public class GameServer {
 		gameMechanicsThread.start();
 		dataBaseServiceThread.start();
 		
-		Server server = new Server(8080);
+		Server server = new Server(8081);
 		
 		SelectChannelConnector connector = new SelectChannelConnector();
 		server.addConnector(connector);

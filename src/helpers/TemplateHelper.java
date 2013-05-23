@@ -40,7 +40,7 @@ public class TemplateHelper {
 		try {
 			Template template = cfg.getTemplate(name);
 			template.process(null, out);
-		} catch (IOException | TemplateException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -49,10 +49,10 @@ public class TemplateHelper {
 		Template template;
 		try {
 			template = cfg.getTemplate(name);
-			Map map = new HashMap<>();
+			Map map = new HashMap();
 			map.putAll(map_arg);
 			template.process(map, out);
-		} catch (IOException | TemplateException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -64,7 +64,7 @@ public class TemplateHelper {
 			Map<String, String> map = new  HashMap<String, String>();
 			map.put("userName", userName);
 			template.process(map, out);
-		} catch (IOException | TemplateException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -77,7 +77,7 @@ public class TemplateHelper {
 			map.put("userName", userName);
 			map.putAll(map_arg);
 			template.process(map, out);
-		} catch (IOException | TemplateException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
