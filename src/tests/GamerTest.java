@@ -4,41 +4,52 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class GamerTest {
 
-	@Test
-	public void testGamer() {
-		fail("Not yet implemented");
-	}
+import gameMechanics.Gamer;
+
+public class GamerTest {
+	
 
 	@Test
 	public void testGetId() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		assertEquals(gamer.getId(), 1);
 	}
 
 	@Test
 	public void testGetBoardPosition() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		gamer.setBoardPosition(23);
+		assertEquals(gamer.getBoardPosition(), 23);
 	}
 
 	@Test
 	public void testGetPoints() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		gamer.setPoints(42);
+		assertEquals(gamer.getPoints(), 42);
 	}
 
 	@Test
 	public void testSetId() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		assertEquals(gamer.getId(), 1);
+		gamer.setId(123);
+		assertEquals(gamer.getId(), 123);
 	}
 
 	@Test
 	public void testSetBoardPosition() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		gamer.setBoardPosition(1234);
+		assertEquals(gamer.getBoardPosition(), 1234);
 	}
 
 	@Test
 	public void testSetPoints() {
-		fail("Not yet implemented");
+		Gamer gamer = new Gamer(1);
+		gamer.setPoints(1234);
+		assertEquals(gamer.getPoints(), 1234);
 	}
 
 }
