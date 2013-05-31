@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import gameMechanics.GameSession;
 import gameMechanics.Gamer;
+import gameMechanics.GameSessionSnapshot;
 
 public class GameSessionTest {
 	private GameSession session;
@@ -57,24 +58,17 @@ public class GameSessionTest {
 		assertFalse(this.session.haveUser(3));
 	}
 
-	@Test
-	public void testSetBoardPositionById() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testIsGameEnd() {
-		fail("Not yet implemented");
-	}
-
+	
 	@Test
 	public void testGetGameSessionSnapshot() {
-		fail("Not yet implemented");
+		this.setUp();
+		this.session.addGamer(1);
+		this.session.addGamer(2);
+		GameSessionSnapshot snapshot = this.session.getGameSessionSnapshot();
+		assertEquals(snapshot.getIdGamer1(), 1);
+		assertEquals(snapshot.getIdGamer2(), 2);
 	}
 
-	@Test
-	public void testNextTick() {
-		fail("Not yet implemented");
-	}
+
 
 }
