@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import frontend.Frontend;
 
 public class TemplateHelper {

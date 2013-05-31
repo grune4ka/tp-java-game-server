@@ -22,7 +22,6 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		MessageSystem.addService(this);
 	}
 	
-	@Override
 	public void run() {
 		try {
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC").newInstance(); //имя драйвера в ресурсы
@@ -45,12 +44,11 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		}
 	}
 
-	@Override
+	
 	public Address getAddress() {
 		return address;
 	}
 
-	@Override
 	public void addUDS(UserDataSet user) {
 		StringBuilder query = new StringBuilder();
 		query
@@ -65,7 +63,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		Executor.execUpdate(connection, query.toString());	
 	}
 
-	@Override
+	
 	public UserDataSet getUDSByLP(String login, String password) throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query
@@ -76,7 +74,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		.append(";");
 				
 		UserDataSet user = Executor.execQuery(connection, query.toString(), new ResultHandler <UserDataSet>(){
-				@Override
+				
 				public UserDataSet handle(ResultSet result) throws SQLException {
 					if (result.next()) {
 						int id = result.getInt("id");

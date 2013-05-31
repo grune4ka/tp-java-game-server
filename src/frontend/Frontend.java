@@ -173,7 +173,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return null;
 	}
 	
-	@Override
+
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
