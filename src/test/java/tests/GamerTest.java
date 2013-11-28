@@ -2,10 +2,11 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+
 
 
 import gameMechanics.Gamer;
+import org.testng.annotations.Test;
 
 public class GamerTest {
 	

@@ -1,11 +1,15 @@
 package tests;
 
-import static org.junit.Assert.*;
 
-import org.junit.Test;
+
+import org.testng.annotations.Test;
 import gameMechanics.GameSession;
 import gameMechanics.Gamer;
 import gameMechanics.GameSessionSnapshot;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class GameSessionTest {
 	private GameSession session;
