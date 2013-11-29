@@ -1,12 +1,10 @@
 package tests;
 
-import static org.junit.Assert.*;
-
-
-
 
 import gameMechanics.Gamer;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 public class GamerTest {
 	

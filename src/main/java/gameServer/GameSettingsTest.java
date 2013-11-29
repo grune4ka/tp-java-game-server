@@ -1,3 +1,5 @@
+//это и есть тест
+/*
 package gameServer;
 
 import org.junit.Test;
@@ -11,3 +13,4 @@ public class GameSettingsTest {
 	}
 
 }
+*/

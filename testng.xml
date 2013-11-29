@@ -3,8 +3,42 @@
 <suite name="Custom suite" parallel="false">
     <test verbose="1" name="ButtonClickGame" annotations="JDK">
         <classes>
-            <class name="tests.GamerTest"/>
-            <class name="tests.GameSessionTest"/>
+            <class name="dataBaseServiceTest.DataBaseServiceTest"/>
+            <class name="dataBaseServiceTest.ExecutorTest"/>
+            <class name="dataBaseServiceTest.MsgGetUserIdTest"/>
+            <class name="dataBaseServiceTest.UserDataSetTest"/>
+
+            <class name="frontendTest.frontendTest"/>
+            <class name="frontendTest.MsgUpdateGamersStatusTest"/>
+            <class name="frontendTest.MsgUpdateUserIdTest"/>
+
+            <class name="gameMechanicsTest.GameMechanicsTest"/>
+            <class name="gameMechanicsTest.GamerTest"/>
+            <class name="gameMechanicsTest.GameSessionSnapshotTest"/>
+            <class name="gameMechanicsTest.GameSessionTest"/>
+            <class name="gameMechanicsTest.MsgConnectUserToGameTest"/>
+            <class name="gameMechanicsTest.MsgUpdateBoardPositionTest"/>
+
+            <class name="gameServerTest.GameServerTest"/>
+            <class name="gameServerTest.GameSettingsTest"/>
+
+            <class name="helpersTest.CookieHelperTest"/>
+            <class name="helpersTest.ParseHelperTest"/>
+            <class name="helpersTest.TemplateHelperTest"/>
+            <class name="helpersTest.TimeHelperTest"/>
+            <class name="helpersTest.VFSTest"/>
+
+            <class name="messageSystemTest.AddressServiceTest"/>
+            <class name="messageSystemTest.MessageSystemTest"/>
+            <class name="messageSystemTest.MsgToDataBaseServiceTest"/>
+            <class name="messageSystemTest.MsgToFrontendTest"/>
+            <class name="messageSystemTest.MsgToGameMechanicsTest"/>
+
+            <class name="modulesTest.AddressTest"/>
+            <class name="modulesTest.MsgTest"/>
+
+            <class name="resourcesTest.ResourceFactoryTest"/>
+
         </classes>
     </test>
 </suite>
