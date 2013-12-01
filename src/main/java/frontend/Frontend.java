@@ -109,7 +109,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return false;
 	}
 	
-	private String userNameByRequest(Request request) {
+	public String userNameByRequest(Request request) {
 		String sessionId = CookieHelper.getCookie(request.getCookies(), "sessionId");
 		if (sessionId != null) {
 			if (sessionInformation.containsKey(sessionId)) {

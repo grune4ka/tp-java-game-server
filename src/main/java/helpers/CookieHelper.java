@@ -18,7 +18,7 @@ public class CookieHelper {
 		return value;
 	}
 	
-	public static int getIntCookie(Cookie[] cookies, String key) {
+	/*public static int getIntCookie(Cookie[] cookies, String key) {
 		int value;
 		try {
 			value = Integer.parseInt(getCookie(cookies, key));
@@ -27,6 +27,6 @@ public class CookieHelper {
 			value = -1;
 		}
 		return value;
-	}
+	}*/
 	
 }

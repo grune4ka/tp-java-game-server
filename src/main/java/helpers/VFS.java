@@ -1,9 +1,6 @@
 package helpers;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class VFS {
 	private static String root = System.getProperty("user.dir");
@@ -20,19 +17,39 @@ public class VFS {
 		return root+path;
 	}
 	
-	public static String getBytes(String path) {
-		try {
-			File f = new File(root+path);
-			FileReader fr = new FileReader(f);
-			char[] buffer = null;		
-			fr.read(buffer);
-			fr.close();
-			return String.copyValueOf(buffer);
-		}
-		 catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;	
+	public static byte[] getBytes(String path) {
+        byte[] buffer = null;
+        String currentLineString;
+        StringBuilder builder = new StringBuilder();
+        String file = root+path;
+
+        if(isDirectory(file))
+            try {
+                throw new IOException("is a Directory");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        else {
+            try {
+                FileReader fr = new FileReader(file);
+
+                BufferedReader br = new BufferedReader(fr);
+
+                while((currentLineString = br.readLine()) != null)
+                    builder.append(currentLineString);
+                br.close();
+
+                buffer = builder.toString().getBytes();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        return buffer;
+
 	}
 	
 	public static void writeToFile(String data, String path) {

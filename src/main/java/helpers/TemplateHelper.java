@@ -12,8 +12,13 @@ import freemarker.template.Template;
 import frontend.Frontend;
 
 public class TemplateHelper {
-	private static Configuration cfg = new Configuration();
-	public static void init() {
+	//private static Configuration cfg = new Configuration();
+    private static Configuration cfg;// = new Configuration();
+
+    public TemplateHelper(Configuration cfg){
+        this.cfg = cfg;
+    }
+    public static void init() {
 			try {
 				cfg.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/templates"));				
 			} catch (IOException e) {

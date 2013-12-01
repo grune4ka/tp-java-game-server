@@ -45,11 +45,11 @@ public class GameSession {
 		}
 	}
 
-	private void setWaiter() {
+	public void setWaiter() {
 		this.waiter = System.currentTimeMillis();
 	}
 
-	private boolean isWait() {
+	public boolean isWait() {
 		if (System.currentTimeMillis() - this.waiter < this.settings.failWait
 				&& this.waiter != 0) {
 			return true;

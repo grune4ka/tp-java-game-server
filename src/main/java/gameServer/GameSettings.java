@@ -23,12 +23,12 @@ public class GameSettings implements Serializable, Resource {
 		this.heigthGameField = heigthGameField;
 		this.vector = vector;
 	}
-
-	public static void test (int a, int b, int c, int d, int[] e) {
+    //тест
+	/*public static void test (int a, int b, int c, int d, int[] e) {
 		GameSettings r = new GameSettings(a, b, c, d, e);
 		XStream xstream = new XStream();
 		String xml = xstream.toXML(r);
 		VFS.writeToFile(xml, "settings/game_settings.xml");
-	}
+	}*/
 	
 }
