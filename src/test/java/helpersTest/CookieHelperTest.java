@@ -20,7 +20,7 @@ public class CookieHelperTest {
     @BeforeClass
     public void setUp(){
         cookies = mock(Cookie.class);
-        //when(cookies.length).thenReturn(2);
+        //when(cookies.length).thenReturn(2);   //не массив!
         helper = new CookieHelper();
     }
 

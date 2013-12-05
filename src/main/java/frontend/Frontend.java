@@ -32,6 +32,8 @@ import org.json.simple.JSONObject;
 
 import dataBaseService.MsgGetUserId;
 
+import static org.eclipse.jetty.util.LazyList.add;
+
 
 public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		FrontendInterface {
@@ -53,14 +55,16 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 
 	public void updateUserId(String sessionId, Integer userId, String nick) {
-		if (userId > 0) {
+
+        if (userId > 0) {
 			if (sessionInformation.containsValue(userId)) {
 				sessionInformation.put(sessionId, -4);
 				System.out.println("Cессия " + sessionId + ": доступ запрещен. Повторная авторизация.");
 				return;
 			}
 			sessionInformation.put(sessionId, userId);
-			userNameById.put(userId, nick);
+            userNameById.put(userId, nick);
+
 			System.out.println("К сессии '" + sessionId + "' добавлен userId "
 				+ userId);
 		}
@@ -125,7 +129,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return null;
 	}
 	
-	private int userIdByRequest(Request request) {
+	public int userIdByRequest(Request request) {
 		String sessionId = CookieHelper.getCookie(request.getCookies(), "sessionId");
 		if (sessionId != null) {
 			if (sessionInformation.containsKey(sessionId)) {
@@ -135,7 +139,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return -42;
 	}
 	
-	private void addSession(String sessionId) {
+	public void addSession(String sessionId) {
 		sessionInformation.put(sessionId, -2);
 	}
 
@@ -164,9 +168,9 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return md.digest().toString();
 	}
 	
-	private GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
-		for(int i = 0; i < gameSessionSnapshots.length; i++) {
-			if (gameSessionSnapshots[i].hasUser(userId)) {
+	public GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
+		for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
+			if (gameSessionSnapshotsByIndex(i).hasUser(userId)) {
 				return gameSessionSnapshots[i];
 			}
 		}
@@ -418,4 +422,28 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 			TimeHelper.sleep(50);
 		}
 	}
+
+    public HashMap<String, Integer> getSessionInformation(){
+        return sessionInformation;
+    }
+
+    public HashMap<Integer, String> getUserNameById(){
+        return userNameById;
+    }
+
+    public GameSessionSnapshot[] getGameSessionSnapshots(){
+        return gameSessionSnapshots;
+    }
+
+    public void addGameSessionSnapshots(GameSessionSnapshot gameSessionSnapshot){
+        add(this.gameSessionSnapshots, gameSessionSnapshot);
+    }
+
+    public int gameSessionSnapshotsLength(){
+        return this.gameSessionSnapshots.length;
+    }
+
+    public GameSessionSnapshot gameSessionSnapshotsByIndex(int i){
+        return  gameSessionSnapshots[i];
+    }
 }

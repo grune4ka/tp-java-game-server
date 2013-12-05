@@ -19,7 +19,6 @@ public class GameSessionTest {
     public void setUp(){
         this.gameSession = new GameSession();
 
-
     }
 
     @Test
