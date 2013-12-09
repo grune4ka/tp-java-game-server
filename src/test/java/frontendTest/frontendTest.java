@@ -161,22 +161,21 @@ public class frontendTest {
 
     @Test
     public void generationSessionIdTest(){
-        //позитивный тест
-        GameSessionSnapshot gameSessionSnapshot = mock(GameSessionSnapshot.class);
-        int userId1 = 1;
-        int userId2 = 2;
-        frontend.addGameSessionSnapshots(gameSessionSnapshot);
-        //when(frontend.gameSessionSnapshotsLength()).thenReturn(1);
-       // when(frontend.gameSessionSnapshotsByIndex(1).hasUser(userId1)).thenReturn(true);
-        //Assert.assertNotNull(frontend.getGameSessionSnapshotByUserId(userId1));
-
-        //негативный тест
-        //when(frontend.gameSessionSnapshotsByIndex(1).hasUser(userId2)).thenReturn(false);
-        //Assert.assertNull(frontend.getGameSessionSnapshotByUserId(userId2));
+        Assert.assertNotNull(frontend.generationSessionId());
     }
 
     @Test
     public void getGameSessionSnapshotByUserId(){
+        int userId1 = 1;
+        int userId2 = 2;
+        GameSessionSnapshot[] gameSessionSnapshots = new GameSessionSnapshot[1];
+        GameSessionSnapshot gameSessionSnapshot = mock(GameSessionSnapshot.class);
+        gameSessionSnapshots[0] = gameSessionSnapshot;
+        when(gameSessionSnapshot.hasUser(userId1)).thenReturn(true);
+        when(gameSessionSnapshot.hasUser(userId2)).thenReturn(false);
+        frontend.updateGameSessionSnapshots(gameSessionSnapshots);
+        Assert.assertEquals(frontend.getGameSessionSnapshotByUserId(userId1), gameSessionSnapshot);
+        Assert.assertNull(frontend.getGameSessionSnapshotByUserId(userId2));
 
     }
 
@@ -188,6 +187,7 @@ public class frontendTest {
     @Test
     public void welcomeTest(){
         //позитивный тест, ид юзера не нулл
+
         //негативный тест, ид юзера нулл
     }
 

@@ -13,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -32,7 +33,7 @@ import org.json.simple.JSONObject;
 
 import dataBaseService.MsgGetUserId;
 
-import static org.eclipse.jetty.util.LazyList.add;
+//import static org.eclipse.jetty.util.LazyList.add;
 
 
 public class Frontend extends AbstractHandler implements Abonent, Runnable,
@@ -154,7 +155,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return sessionInformation.get(sessionId);
 	}
 
-	private String generationSessionId() {
+	public String generationSessionId() {
 		String hashString = String.valueOf(System.currentTimeMillis());
 		MessageDigest md = null;
 		try {
@@ -169,11 +170,15 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	public GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
-		for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
-			if (gameSessionSnapshotsByIndex(i).hasUser(userId)) {
-				return gameSessionSnapshots[i];
-			}
-		}
+		try {
+            for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
+			    if (gameSessionSnapshotsByIndex(i).hasUser(userId)) {
+				    return gameSessionSnapshotsByIndex(i);
+			    }
+		    }
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
 		return null;
 	}
 	
@@ -192,51 +197,39 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 			this.welcome(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-
-		if (target.equals("/join")) {
+		} else if (target.equals("/join")) {
 			this.join(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		if (target.equals("/isJoin")) {
+		} else if (target.equals("/isJoin")) {
 			this.isJoin(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-
-		if (target.equals("/game")) {
+		} else if (target.equals("/game")) {
 			this.game(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		if (target.equals("/isGameActive")) {
+		} else if (target.equals("/isGameActive")) {
 			this.isGameActive(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		if (target.equals("/updateGameData")) {
+		} else if (target.equals("/updateGameData")) {
 			this.updateGameData(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		if (target.equals("/logout")) {
+		} else if (target.equals("/logout")) {
 			this.logout(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		if (target.equals("/results")) {
+		} else if (target.equals("/results")) {
 			results(target, baseRequest, request, response);
 			baseRequest.setHandled(true);
 			return;
-		}
-		
-		//добавить обработчик для 404 ошибки.
+		} else {
+            //обработчик 404
+            return;
+        }
+
 	}
 	
 	@Responder
@@ -433,10 +426,6 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 
     public GameSessionSnapshot[] getGameSessionSnapshots(){
         return gameSessionSnapshots;
-    }
-
-    public void addGameSessionSnapshots(GameSessionSnapshot gameSessionSnapshot){
-        add(this.gameSessionSnapshots, gameSessionSnapshot);
     }
 
     public int gameSessionSnapshotsLength(){

@@ -101,7 +101,7 @@ public class GameSessionTest {
 
     @Test
     public void nextTickTest(){
-        gameSession.addGamer(1);
-        gameSession.addGamer(2);
+       // gameSession.addGamer(1);
+        //gameSession.addGamer(2);
     }
 }
