@@ -21,6 +21,6 @@ public class VFSTest {
     @Test
     public void getBytesTest() throws Exception{
         Assert.assertNull(vfs.getBytes("/"));
-        Assert.assertNotNull(vfs.getBytes("/resource.txt"));
+        Assert.assertNotNull(vfs.getBytes("/settings/resource.txt"));
     }
 }
