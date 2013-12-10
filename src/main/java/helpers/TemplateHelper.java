@@ -39,50 +39,58 @@ public class TemplateHelper {
 		}
 		return template;
 	}
-	
-	public static void renderTemplate(String name, Writer out) {
-		try {
-			Template template = cfg.getTemplate(name);
-			template.process(null, out);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-		
-	public static void renderTemplate(String name, Map map_arg, Writer out) {
-		Template template;
-		try {
-			template = cfg.getTemplate(name);
-			Map map = new HashMap();
-			map.putAll(map_arg);
-			template.process(map, out);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void renderTemplate(String name, String userName, Writer out) {
-		Template template;
-		try {
-			template = cfg.getTemplate(name);
-			Map<String, String> map = new  HashMap<String, String>();
-			map.put("userName", userName);
-			template.process(map, out);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void renderTemplate(String name, String userName, Map map_arg, Writer out) {
-		Template template;
-		try {
-			template = cfg.getTemplate(name);
-			Map map = new  HashMap();
-			map.put("userName", userName);
-			map.putAll(map_arg);
-			template.process(map, out);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
+    public boolean renderTemplate(String name, Writer out) {
+        try {
+            Template template = cfg.getTemplate(name);
+            template.process(null, out);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean renderTemplate(String name, Map map_arg, Writer out) {
+        Template template;
+        try {
+            template = cfg.getTemplate(name);
+            Map map = new HashMap();
+            map.putAll(map_arg);
+            template.process(map, out);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean renderTemplate(String name, String userName, Writer out) {
+        Template template;
+        try {
+            template = cfg.getTemplate(name);
+            Map<String, String> map = new  HashMap<String, String>();
+            map.put("userName", userName);
+            template.process(map, out);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean renderTemplate(String name, String userName, Map map_arg, Writer out) {
+        Template template;
+        try {
+            template = cfg.getTemplate(name);
+            Map map = new  HashMap();
+            map.put("userName", userName);
+            map.putAll(map_arg);
+            template.process(map, out);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

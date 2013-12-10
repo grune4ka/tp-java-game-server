@@ -1,5 +1,6 @@
 package gameServer;
 
+import freemarker.template.Configuration;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -12,8 +13,9 @@ import gameMechanics.GameMechanics;
 import helpers.TemplateHelper;
 
 public class GameServer {
-	public static void main(String[] arg) throws Exception {
-		Frontend frontend = new Frontend();
+
+    public static void main(String[] arg) throws Exception {
+		Frontend frontend = new Frontend(new Configuration());
 		GameMechanics gameMechanics = new GameMechanics();
 		DataBaseService dataBaseService = new DataBaseService();
 			

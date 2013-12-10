@@ -1,5 +1,6 @@
 package frontend;
 
+import freemarker.template.Configuration;
 import gameMechanics.GameSessionSnapshot;
 import gameMechanics.MsgConnectUserToGame;
 import gameMechanics.MsgUpdateBoardPosition;
@@ -42,11 +43,13 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	private HashMap<Integer, String> userNameById;
 	private GameSessionSnapshot[] gameSessionSnapshots;
 	private Address address;
+    private static TemplateHelper TemplateHelp;
+    public static boolean IsHandled = false;
 
-	public Frontend() {
+	public Frontend(Configuration cfg) {
 		sessionInformation = new HashMap<String, Integer>();
 		userNameById = new HashMap<Integer, String>();
-
+        this.TemplateHelp = new TemplateHelper(cfg);
 		address = new Address("Frontend");
 		MessageSystem.addService(this);
 	}
@@ -181,233 +184,274 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         }
 		return null;
 	}
-	
 
-	public void handle(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+    private boolean setSettingsResponse(HttpServletResponse response){
+        try{
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_OK);
 
-		response.setContentType("text/html;charset=utf-8");
-		response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader("Cache-Control","no-store, no-cache, must-revalidate");
+            response.setHeader("Expires", TimeHelper.getGMT());
+            return true;
+        }   catch (Exception e){
 
-		response.setHeader("Cache-Control","no-store, no-cache, must-revalidate");
-		response.setHeader("Expires", TimeHelper.getGMT());
+        }
+        return false;
 
-		if (target.equals("/")) {
-			this.welcome(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/join")) {
-			this.join(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/isJoin")) {
-			this.isJoin(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/game")) {
-			this.game(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/isGameActive")) {
-			this.isGameActive(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/updateGameData")) {
-			this.updateGameData(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/logout")) {
-			this.logout(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else if (target.equals("/results")) {
-			results(target, baseRequest, request, response);
-			baseRequest.setHandled(true);
-			return;
-		} else {
-            //обработчик 404
+    }
+
+    public void handle(String target, Request baseRequest,
+                          HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+
+        if(this.setSettingsResponse(response)){
+
+            if (target.equals("/")) {
+                this.welcome(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/join")) {
+                this.join(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/isJoin")) {
+                this.isJoin(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/game")) {
+                this.game(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/isGameActive")) {
+                this.isGameActive(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/updateGameData")) {
+                this.updateGameData(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/logout")) {
+                this.logout(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else if (target.equals("/results")) {
+                results(target, baseRequest, request, response);
+                //baseRequest.setHandled(true);
+                return;
+            } else {
+                IsHandled = false;
+                return;
+            }
+
+        } else {
+            IsHandled = false;
+            return;
+        }
+    }
+    @Responder
+    private void welcome(String target, Request baseRequest,
+                         HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        String userName = this.userNameByRequest(baseRequest);
+        if (userName != null) {
+            IsHandled = TemplateHelp.renderTemplate("index.html", userName, response.getWriter());
+        }
+        else {
+            IsHandled = TemplateHelp.renderTemplate("index.html", response.getWriter());
+        }
+
+
+    }
+
+    @Responder
+    private void join(String target, Request baseRequest,
+                      HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        String sessionId = CookieHelper.getCookie(request.getCookies(),"sessionId");
+        if (sessionId == null || !this.isSessionActive(sessionId)) {
+            sessionId = this.generationSessionId();
+            Cookie[] cookie = new Cookie[1];
+            cookie[0] = new Cookie("sessionId", target);
+            cookie[0].setValue(sessionId);
+            response.addCookie(cookie[0]);
+            this.addSession(sessionId);
+            IsHandled = TemplateHelp.renderTemplate("join.html", response.getWriter());
+        } else {
+            if (this.userIdBySessionId(sessionId) > 0) {
+                response.sendRedirect("/");
+                return;
+            }
+            else if (this.userIdBySessionId(sessionId) == -4) {
+                Map<String, Boolean> map = new HashMap<String, Boolean>();
+                map.put("alreadyJoin", true);
+                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                this.sessionInformation.put(sessionId, -2);
+            }
+            else if (this.userIdBySessionId(sessionId) == -3) {
+                Map<String, Boolean> map = new HashMap<String, Boolean>();
+                map.put("wrongData", true);
+                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                this.sessionInformation.put(sessionId, -2);
+            }
+            else if (this.userIdBySessionId(sessionId) == -2) {
+                String	login = request.getParameter("login");
+                String	password = request.getParameter("password");
+                if (login == null || password == null) {
+                    IsHandled = TemplateHelp.renderTemplate("join.html", response.getWriter());
+                }
+                else {
+                    this.sendRequestToUpdateUserId(sessionId, login, password);
+                    IsHandled = TemplateHelp.renderTemplate("waitAuth.html", response.getWriter());
+                }
+            } else if (this.userIdBySessionId(sessionId) == -1) {
+                IsHandled = TemplateHelp.renderTemplate("waitAuth.html", response.getWriter());
+            }
+        }
+
+    }
+
+    @Responder
+    private void isJoin(String target, Request baseRequest,
+                        HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        String sessionId = CookieHelper.getCookie(baseRequest.getCookies(),
+                "sessionId");
+        boolean isJoin = false;
+        JSONObject obj = new JSONObject();
+        if (sessionId != null) {
+            if (this.isSessionActive(sessionId)) {
+                if (this.userIdBySessionId(sessionId) > 0 || this.userIdBySessionId(sessionId) == -3 || this.userIdBySessionId(sessionId) == -4) {
+                    isJoin = true;
+                }
+            }
+        }
+        obj.put("isJoin", isJoin);
+        response.getWriter().print(obj);
+
+        IsHandled = isJoin;
+    }
+
+    @Responder
+    private void game(String target, Request baseRequest,
+                      HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        int userId = this.userIdByRequest(baseRequest);
+        if (userId > 0) {
+            if (this.isBothUserInGame(userId) == true) {
+                IsHandled = TemplateHelp.renderTemplate("game.html",
+                        this.userNameById.get(userId),
+                        response.getWriter());
+            }
+            else {
+                if (!this.isUserJoinInGameSession(userId)) {
+                    this.connectUserToGame(userId);
+                }
+                IsHandled = TemplateHelp.renderTemplate("wait.html",
+                        this.userNameById.get(userId),
+                        response.getWriter());
+            }
+        }
+        else {
+            response.sendRedirect("/join");
+        }
+
+    }
+
+    @Responder
+    private void isGameActive(String target, Request baseRequest,
+                              HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        boolean isGameActive = false;
+        JSONObject obj = new JSONObject();
+        isGameActive = this.isBothUserInGame(this.userIdByRequest(baseRequest));
+
+        if(isGameActive){
+            obj.put("isGameActive", isGameActive);
+            response.getWriter().print(obj);
+        } else {
             return;
         }
 
-	}
-	
-	@Responder
-	private void welcome(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		String userName = this.userNameByRequest(baseRequest); 
-		if (userName != null) {
-			TemplateHelper.renderTemplate("index.html", userName, response.getWriter());
-		}
-		else {
-			TemplateHelper.renderTemplate("index.html", response.getWriter());
-		}
-	}
-	
-	@Responder
-	private void join(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		String sessionId = CookieHelper.getCookie(request.getCookies(),"sessionId");
-		if (sessionId == null || !this.isSessionActive(sessionId)) {
-			sessionId = this.generationSessionId();
-			Cookie[] cookie = new Cookie[1];
-			cookie[0] = new Cookie("sessionId", target);
-			cookie[0].setValue(sessionId);
-			response.addCookie(cookie[0]);
-			this.addSession(sessionId);
-			TemplateHelper.renderTemplate("join.html", response.getWriter());
-		} else {
-			if (this.userIdBySessionId(sessionId) > 0) {
-				response.sendRedirect("/");
-				return;
-			}
-			else if (this.userIdBySessionId(sessionId) == -4) {
-				Map<String, Boolean> map = new HashMap<String, Boolean>();
-				map.put("alreadyJoin", true);
-				TemplateHelper.renderTemplate("join.html", map, response.getWriter());
-				this.sessionInformation.put(sessionId, -2);
-			}
-			else if (this.userIdBySessionId(sessionId) == -3) {
-				Map<String, Boolean> map = new HashMap<String, Boolean>();
-				map.put("wrongData", true);
-				TemplateHelper.renderTemplate("join.html", map, response.getWriter());
-				this.sessionInformation.put(sessionId, -2);
-			}
-			else if (this.userIdBySessionId(sessionId) == -2) {
-				String	login = request.getParameter("login");
-				String	password = request.getParameter("password");
-				if (login == null || password == null) {
-					TemplateHelper.renderTemplate("join.html", response.getWriter());
-				}
-				else {
-					this.sendRequestToUpdateUserId(sessionId, login, password);
-					TemplateHelper.renderTemplate("waitAuth.html", response.getWriter());
-				}
-			} else if (this.userIdBySessionId(sessionId) == -1) {
-				TemplateHelper.renderTemplate("waitAuth.html", response.getWriter());
-			}
-		}
-	}
-	
-	@Responder
-	private void isJoin(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		String sessionId = CookieHelper.getCookie(baseRequest.getCookies(),
-				"sessionId");
-		boolean isJoin = false;
-		JSONObject obj = new JSONObject();
-		if (sessionId != null) {
-			if (this.isSessionActive(sessionId)) {
-				if (this.userIdBySessionId(sessionId) > 0 || this.userIdBySessionId(sessionId) == -3 || this.userIdBySessionId(sessionId) == -4) {
-					isJoin = true;
-				}
-			}
-		}
-		obj.put("isJoin", isJoin);
-		response.getWriter().print(obj);
-	}
-	
-	@Responder
-	private void game(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		int userId = this.userIdByRequest(baseRequest);
-		if (userId > 0) {
-			if (this.isBothUserInGame(userId) == true) {
-				TemplateHelper.renderTemplate("game.html", 
-						this.userNameById.get(userId), 
-						response.getWriter());
-			}
-			else {
-				if (!this.isUserJoinInGameSession(userId)) {
-					this.connectUserToGame(userId);
-				}
-				TemplateHelper.renderTemplate("wait.html", 
-						this.userNameById.get(userId), 
-						response.getWriter());
-			}
-		}
-		else {
-			response.sendRedirect("/join");
-		}
-	}
-	
-	@Responder
-	private void isGameActive(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		boolean isGameActive = false;
-		JSONObject obj = new JSONObject();			
-		isGameActive = this.isBothUserInGame(this.userIdByRequest(baseRequest));
-		obj.put("isGameActive", isGameActive);
-		response.getWriter().print(obj);
-	}
-	
-	@Responder
-	private void updateGameData(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
-		int userId = this.userIdByRequest(baseRequest);
-		if (userId <= 0) {
-			response.sendRedirect("/join");
-			return;
-		}
-		String boardPosition = request.getParameter("boardPos");
-		if (boardPosition != null) {
-			int intBoardPosition = ParseHelper.strToInt(boardPosition);
-			MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(), 
-					AddressService.getAddressByServiceName("GameMechanics"), 
-					userId, intBoardPosition);
-			MessageSystem.sendMessage(msg);
-		}
-		
-		GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
-		JSONObject obj = new JSONObject();			
-		obj.putAll(snapshot.getHashMapByUserId(userId));
-		response.getWriter().print(obj);
-	}
-	
-	@Responder
-	private void results(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		String mePoints = request.getParameter("me");
-		String enemyPoints = request.getParameter("enemy");
-		if (mePoints == null) {
-			mePoints = "";
-		}
-		if (enemyPoints == null) {
-			enemyPoints = "";
-		}
-		HashMap<String, String> results = new HashMap<String, String>();
-		results.put("me", mePoints);
-		results.put("enemy", enemyPoints);
-		TemplateHelper.renderTemplate("results.html", userNameByRequest(baseRequest), results, response.getWriter());
-	}
-	
-	@Responder
-	private void logout(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		String sessionId = CookieHelper.getCookie(baseRequest.getCookies(), "sessionId");
-		if (sessionId != null) {
-			if (sessionInformation.containsKey(sessionId)) {
-				int id = sessionInformation.get(sessionId);
-				if (id > 0) {
-					if (userNameById.containsKey(id)) {
-						System.out.println("Пользователь #"+id+" (Сессия " + sessionId+") вышел из системы");
-						userNameById.remove(id);
-						sessionInformation.remove(sessionId);
-						response.sendRedirect("/");
-						return;
-					}
-				}
-			}
-		}
-		TemplateHelper.renderTemplate("index.html", response.getWriter());
-	}
+
+    }
+
+    @Responder
+    private void updateGameData(String target, Request baseRequest,
+                                HttpServletRequest request, HttpServletResponse response) throws IOException {
+        IsHandled = false;
+        int userId = this.userIdByRequest(baseRequest);
+        if (userId <= 0) {
+            response.sendRedirect("/join");
+            return;
+        }
+        String boardPosition = request.getParameter("boardPos");
+        if (boardPosition != null) {
+            int intBoardPosition = ParseHelper.strToInt(boardPosition);
+            MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(),
+                    AddressService.getAddressByServiceName("GameMechanics"),
+                    userId, intBoardPosition);
+            MessageSystem.sendMessage(msg);
+        } else {
+            return;
+        }
+
+        GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
+        JSONObject obj = new JSONObject();
+        obj.putAll(snapshot.getHashMapByUserId(userId));
+        response.getWriter().print(obj);
+
+        IsHandled = true;
+    }
+
+    @Responder
+    private void results(String target, Request baseRequest,
+                         HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        IsHandled = false;
+        String mePoints = request.getParameter("me");
+        String enemyPoints = request.getParameter("enemy");
+        if (mePoints == null) {
+            mePoints = "";
+        }
+        if (enemyPoints == null) {
+            enemyPoints = "";
+        }
+        HashMap<String, String> results = new HashMap<String, String>();
+        results.put("me", mePoints);
+        results.put("enemy", enemyPoints);
+        IsHandled = TemplateHelp.renderTemplate("results.html", userNameByRequest(baseRequest), results, response.getWriter());
+
+    }
+
+    @Responder
+    private void logout(String target, Request baseRequest,
+                        HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        IsHandled = false;
+        String sessionId = CookieHelper.getCookie(baseRequest.getCookies(), "sessionId");
+        if (sessionId != null) {
+            if (sessionInformation.containsKey(sessionId)) {
+                int id = sessionInformation.get(sessionId);
+                if (id > 0) {
+                    if (userNameById.containsKey(id)) {
+                        System.out.println("Пользователь #"+id+" (Сессия " + sessionId+") вышел из системы");
+                        userNameById.remove(id);
+                        sessionInformation.remove(sessionId);
+                        //response.sendRedirect("/");
+                        IsHandled = TemplateHelp.renderTemplate("index.html", response.getWriter());
+                        return;
+                    }
+                }
+            }
+        }
+
+
+    }
 		
 	public void run() {
 		while (true) {

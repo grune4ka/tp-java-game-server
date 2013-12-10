@@ -11,6 +11,7 @@
             <class name="frontendTest.frontendTest"/>
             <class name="frontendTest.MsgUpdateGamersStatusTest"/>
             <class name="frontendTest.MsgUpdateUserIdTest"/>
+            <!--<class name="frontendTest.FronendTestWithPowerMock"/>-->
 
             <class name="gameMechanicsTest.GameMechanicsTest"/>
             <class name="gameMechanicsTest.GamerTest"/>
