@@ -45,18 +45,25 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	private Address address;
     private static TemplateHelper TemplateHelp;
     public static boolean IsHandled = false;
+    public HashMap<String,String> results;
 
 	public Frontend(Configuration cfg) {
 		sessionInformation = new HashMap<String, Integer>();
 		userNameById = new HashMap<Integer, String>();
+        results = new HashMap<String, String>();
         this.TemplateHelp = new TemplateHelper(cfg);
 		address = new Address("Frontend");
 		MessageSystem.addService(this);
 	}
-
+    public void updateTemplateHelper(TemplateHelper templateHelper){
+        this.TemplateHelp = templateHelper;
+    }
 	public Address getAddress() {
 		return address;
 	}
+    public String userNameById(int id){
+        return userNameById.get(id);
+    }
 
 	public void updateUserId(String sessionId, Integer userId, String nick) {
 
@@ -99,9 +106,9 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	private boolean isBothUserInGame(int userId) {
-		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
-			if (this.gameSessionSnapshots[i].hasUser(userId) == true 
-					&& !this.gameSessionSnapshots[i].haveFreeSlots()) {
+		for(int i = 0; i < this.gameSessionSnapshotsLength(); i++) {
+			if (gameSessionSnapshotsByIndex(i).hasUser(userId) == true
+					&& !gameSessionSnapshotsByIndex(i).haveFreeSlots()) {
 				return true;
 			}
 		}
@@ -275,12 +282,18 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
             Cookie[] cookie = new Cookie[1];
             cookie[0] = new Cookie("sessionId", target);
             cookie[0].setValue(sessionId);
-            response.addCookie(cookie[0]);
+            //response.addCookie(cookie[0]);
             this.addSession(sessionId);
             IsHandled = TemplateHelp.renderTemplate("join.html", response.getWriter());
+
         } else {
             if (this.userIdBySessionId(sessionId) > 0) {
-                response.sendRedirect("/");
+                try{
+                    response.sendRedirect("/");
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                IsHandled = true;
                 return;
             }
             else if (this.userIdBySessionId(sessionId) == -4) {
@@ -343,7 +356,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         if (userId > 0) {
             if (this.isBothUserInGame(userId) == true) {
                 IsHandled = TemplateHelp.renderTemplate("game.html",
-                        this.userNameById.get(userId),
+                        this.userNameById(userId),
                         response.getWriter());
             }
             else {
@@ -351,12 +364,13 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                     this.connectUserToGame(userId);
                 }
                 IsHandled = TemplateHelp.renderTemplate("wait.html",
-                        this.userNameById.get(userId),
+                        this.userNameById(userId),
                         response.getWriter());
             }
         }
         else {
-            response.sendRedirect("/join");
+            //response.sendRedirect("/join");
+            return;
         }
 
     }
@@ -367,17 +381,18 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
             throws IOException, ServletException {
         IsHandled = false;
         boolean isGameActive = false;
+
         JSONObject obj = new JSONObject();
+
         isGameActive = this.isBothUserInGame(this.userIdByRequest(baseRequest));
 
         if(isGameActive){
             obj.put("isGameActive", isGameActive);
-            response.getWriter().print(obj);
+            //response.getWriter().print(obj);
+            IsHandled = true;
         } else {
             return;
         }
-
-
     }
 
     @Responder
@@ -391,19 +406,28 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         }
         String boardPosition = request.getParameter("boardPos");
         if (boardPosition != null) {
-            int intBoardPosition = ParseHelper.strToInt(boardPosition);
-            MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(),
+            try{
+                int intBoardPosition = ParseHelper.strToInt(boardPosition);
+
+                MsgUpdateBoardPosition msg = new MsgUpdateBoardPosition(this.getAddress(),
                     AddressService.getAddressByServiceName("GameMechanics"),
                     userId, intBoardPosition);
-            MessageSystem.sendMessage(msg);
+                MessageSystem.sendMessage(msg);
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            }
         } else {
             return;
         }
 
         GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
-        JSONObject obj = new JSONObject();
-        obj.putAll(snapshot.getHashMapByUserId(userId));
-        response.getWriter().print(obj);
+        try{
+            JSONObject obj = new JSONObject();
+            obj.putAll(snapshot.getHashMapByUserId(userId));
+            response.getWriter().print(obj);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
         IsHandled = true;
     }
@@ -421,10 +445,11 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         if (enemyPoints == null) {
             enemyPoints = "";
         }
-        HashMap<String, String> results = new HashMap<String, String>();
-        results.put("me", mePoints);
-        results.put("enemy", enemyPoints);
-        IsHandled = TemplateHelp.renderTemplate("results.html", userNameByRequest(baseRequest), results, response.getWriter());
+        //HashMap<String, String> results = new HashMap<String, String>();
+        this.results.put("me", mePoints);
+        this.results.put("enemy", enemyPoints);
+        IsHandled = TemplateHelp.renderTemplate("results.html", userNameByRequest(baseRequest), this.results, response.getWriter());
+
 
     }
 
@@ -479,4 +504,6 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
     public GameSessionSnapshot gameSessionSnapshotsByIndex(int i){
         return  gameSessionSnapshots[i];
     }
+
+
 }
