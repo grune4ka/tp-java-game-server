@@ -20,34 +20,19 @@ public class Gamer {
 	public int getPoints() {
 		return this.points;
 	}
-	
-	public boolean setId(int id) {
-		try {
-			this.id = id;
-		}
-		catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-	public boolean setBoardPosition(int boardPosition) {
-		try {
-			this.boardPosition = boardPosition;
-		}
-		catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-	public boolean setPoints(int points) {
-		try {
-			this.points = points;
-		}
-		catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
+
+    public void setId(int id) {
+        this.id = id;
+
+    }
+    public void setBoardPosition(int boardPosition) {
+        this.boardPosition = boardPosition;
+
+    }
+    public void setPoints(int points) {
+        this.points = points;
+
+    }
 
 }
 

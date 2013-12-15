@@ -11,6 +11,7 @@ public class MsgConnectUserToGame extends MsgToGameMechanics {
 	}	
 
 	public void exec(GameMechanics gameMechanics) {
-		gameMechanics.addUserToGame(userId);
+		GameSession gameSession = new GameSession();
+        gameMechanics.addUserToGame(userId, gameSession);
 	}
 }

@@ -158,7 +158,7 @@ public class GameSession {
 	}
 
 	public void nextTick() {
-		if (!this.haveFreeSlots() && !this.isGameEnd() && !this.isWait()) {
+		if (!this.haveFreeSlots() && !this.isGameEnd() && !this.isWait() ){
 			if (this.ballXPosition < 0
 					|| this.ballXPosition > this.settings.widthGameField) {
 				this.settings.vector[0] = -this.settings.vector[0];
@@ -171,10 +171,11 @@ public class GameSession {
 					}
 				} else {
 					this.gamer1.setPoints(this.gamer1.getPoints() + 1);
-					this.ballXPosition = this.settings.widthGameField / 2;
-					this.ballYPosition = this.settings.heigthGameField / 2;
-					this.setWaiter();
-					return;
+					    this.ballXPosition = this.settings.widthGameField / 2;
+					    this.ballYPosition = this.settings.heigthGameField / 2;
+					    this.setWaiter();
+					    return;
+
 				}
 			}
 
@@ -186,14 +187,41 @@ public class GameSession {
 					}
 				} else {
 					this.gamer2.setPoints(this.gamer2.getPoints() + 1);
-					this.ballXPosition = this.settings.widthGameField / 2;
-					this.ballYPosition = this.settings.heigthGameField / 2;
-					this.setWaiter();
-					return;
-				}
+					    this.ballXPosition = this.settings.widthGameField / 2;
+					    this.ballYPosition = this.settings.heigthGameField / 2;
+					    this.setWaiter();
+					    return;
+                    }
+
 			}
 			this.ballXPosition += this.settings.vector[0];
 			this.ballYPosition += this.settings.vector[1];
 		}
 	}
+
+
+    public void setGamer1(Gamer gamer){
+        this.gamer1 = gamer;
+    }
+
+    public void setGamer2(Gamer gamer){
+        this.gamer2 = gamer;
+    }
+
+    public void setBallXPosition(int ballXPosition){
+        this.ballXPosition = ballXPosition;
+    }
+
+    public void setBallYPosition(int ballYPosition){
+        this.ballYPosition = ballYPosition;
+    }
+
+    public int getBallXPosition(){
+        return this.ballXPosition;
+    }
+
+    public int getBallYPosition(){
+        return this.ballYPosition;
+    }
+
 }

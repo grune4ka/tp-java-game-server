@@ -24,27 +24,23 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		return address;
 	}
 		
-	public void addUserToGame(int userId) {
-		for (int i = 0; i < gameSessions.size(); i++) {
-			if (gameSessions.get(i).haveUser(userId)) {
+	public void addUserToGame(int userId, GameSession gameSession) {
+
+        for (int i = 0; i < this.gameSessions.size(); i++) {
+			if (this.gameSessions.get(i).haveUser(userId)) {
 				return;
 			}			
 		}
 		
-		for (int i = 0; i < gameSessions.size(); i++) {
-			if (gameSessions.get(i).haveFreeSlots()) {
-				gameSessions.get(i).addGamer(userId);
-				//mock
-				/*if (gameSessions.get(i).haveFreeSlots()) {
-					gameSessions.get(i).addGamer(1586);
-				}*/
+		for (int i = 0; i < this.gameSessions.size(); i++) {
+			if (this.gameSessions.get(i).haveFreeSlots()) {
+				this.gameSessions.get(i).addGamer(userId);
 				return;
 			}			
 		}
-		GameSession newSession = new GameSession();
-		newSession.addGamer(userId);
-		/*newSession.addGamer(1586); //mock*/
-		gameSessions.add(newSession);
+
+		gameSession.addGamer(userId);
+        this.gameSessions.add(gameSession);
 		
  	}
 		
@@ -52,7 +48,8 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		for(int i = 0; i < gameSessions.size(); i++) {
 			if (gameSessions.get(i).haveUser(userId)) {
 				gameSessions.get(i).setBoardPositionById(userId, position);
-				break;
+
+                break;
 			}
 		}
 	}
@@ -81,13 +78,31 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 	
 	public void run() {
 		while (true) { 
-			MessageSystem.execForAbonent(this);
-			MsgUpdateGamersStatus msg = new MsgUpdateGamersStatus(this.address, 
-					AddressService.getAddressByServiceName("Frontend"), 
-					this.getGameSessionSnapshotArray());
-			MessageSystem.sendMessage(msg);
-			this.nextGamesTicks();				
-			TimeHelper.sleep(10);
+			doAct();
 		}
 	}
+
+    public boolean doAct(){
+        try{
+            MessageSystem.execForAbonent(this);
+
+            MsgUpdateGamersStatus msg = new MsgUpdateGamersStatus(this.address,
+                AddressService.getAddressByServiceName("Frontend"),
+                this.getGameSessionSnapshotArray());
+            MessageSystem.sendMessage(msg);
+            this.nextGamesTicks();
+            TimeHelper.sleep(10);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public GameSession getGameSessionLast(){
+        return gameSessions.lastElement();
+    }
+
+    public int getGameSessionsSize(){
+        return this.gameSessions.size();
+    }
 }

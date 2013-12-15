@@ -192,64 +192,49 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 		return null;
 	}
 
-    private boolean setSettingsResponse(HttpServletResponse response){
-        try{
-            response.setContentType("text/html;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_OK);
-
-            response.setHeader("Cache-Control","no-store, no-cache, must-revalidate");
-            response.setHeader("Expires", TimeHelper.getGMT());
-            return true;
-        }   catch (Exception e){
-
-        }
-        return false;
-
-    }
-
     public void handle(String target, Request baseRequest,
                           HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        if(this.setSettingsResponse(response)){
 
-            if (target.equals("/")) {
-                this.welcome(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/join")) {
-                this.join(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/isJoin")) {
-                this.isJoin(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/game")) {
-                this.game(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/isGameActive")) {
-                this.isGameActive(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/updateGameData")) {
-                this.updateGameData(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/logout")) {
-                this.logout(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else if (target.equals("/results")) {
-                results(target, baseRequest, request, response);
-                //baseRequest.setHandled(true);
-                return;
-            } else {
-                IsHandled = false;
-                return;
-            }
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
 
+        response.setHeader("Cache-Control","no-store, no-cache, must-revalidate");
+        response.setHeader("Expires", TimeHelper.getGMT());
+
+        if (target.equals("/")) {
+            this.welcome(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/join")) {
+            this.join(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/isJoin")) {
+            this.isJoin(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/game")) {
+            this.game(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/isGameActive")) {
+            this.isGameActive(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/updateGameData")) {
+            this.updateGameData(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/logout")) {
+            this.logout(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
+        } else if (target.equals("/results")) {
+            results(target, baseRequest, request, response);
+            baseRequest.setHandled(true);
+            return;
         } else {
             IsHandled = false;
             return;
@@ -299,8 +284,9 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
             else if (this.userIdBySessionId(sessionId) == -4) {
                 Map<String, Boolean> map = new HashMap<String, Boolean>();
                 map.put("alreadyJoin", true);
-                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
                 this.sessionInformation.put(sessionId, -2);
+                //IsHandled = true;
+                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
             }
             else if (this.userIdBySessionId(sessionId) == -3) {
                 Map<String, Boolean> map = new HashMap<String, Boolean>();

@@ -16,6 +16,7 @@ public class GameSessionSnapshot {
 	
 	private boolean active;
 	private boolean finish;
+    private HashMap<String, String> map;
 	
 	public GameSessionSnapshot(int idGamer1, int pointsGamer1, int positionGamer1, 
 			int idGamer2, int pointsGamer2, int positionGamer2,
@@ -35,6 +36,7 @@ public class GameSessionSnapshot {
 		
 		this.active = active;
 		this.finish = finish;
+        this.map = new  HashMap<String, String>();
 	}
 	
 	public int getIdGamer1() {
@@ -77,36 +79,36 @@ public class GameSessionSnapshot {
 		return (idGamer1 == -1) || (idGamer2 == -1);
 	}
 	public HashMap<String,String> getHashMapByUserId(int id) {
-		HashMap<String, String> map = new HashMap<String, String>();
+
 		if (this.finish) {
-			map.put("results", new Boolean(true).toString());
+			this.map.put("results", new Boolean(true).toString());
 			if (this.idGamer1 == id) {
-				map.put("yourPoints", new Integer(this.pointsGamer1).toString());
-				map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
+				this.map.put("yourPoints", new Integer(this.pointsGamer1).toString());
+				this.map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
 			}
 			else {
-				map.put("yourPoints", new Integer(this.pointsGamer2).toString());
-				map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
+				this.map.put("yourPoints", new Integer(this.pointsGamer2).toString());
+				this.map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
 			}
-			return map;
+			return this.map;
 		}
 		else {
-			map.put("results", new Boolean(false).toString());
+			this.map.put("results", new Boolean(false).toString());
 		}
 		if (this.idGamer1 == id) {
-			map.put("enemyPosition", new Integer(this.positionGamer2).toString());
-			map.put("yourPoints", new Integer(this.pointsGamer1).toString());
-			map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
-			map.put("ballXPos", new Integer(this.ballPositionX).toString());
-			map.put("ballYPos", new Integer(this.ballPositionY).toString());
+			this.map.put("enemyPosition", new Integer(this.positionGamer2).toString());
+			this.map.put("yourPoints", new Integer(this.pointsGamer1).toString());
+			this.map.put("enemyPoints", new Integer(this.pointsGamer2).toString());
+			this.map.put("ballXPos", new Integer(this.ballPositionX).toString());
+			this.map.put("ballYPos", new Integer(this.ballPositionY).toString());
 		}
 		else {
-			map.put("enemyPosition", new Integer(this.positionGamer1).toString());
-			map.put("yourPoints", new Integer(this.pointsGamer2).toString());
-			map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
-			map.put("ballXPos", new Integer(this.ballPositionX).toString());
-			map.put("ballYPos", new Integer(480 - this.ballPositionY).toString());//to resurce
+			this.map.put("enemyPosition", new Integer(this.positionGamer1).toString());
+			this.map.put("yourPoints", new Integer(this.pointsGamer2).toString());
+			this.map.put("enemyPoints", new Integer(this.pointsGamer1).toString());
+			this.map.put("ballXPos", new Integer(this.ballPositionX).toString());
+			this.map.put("ballYPos", new Integer(480 - this.ballPositionY).toString());//to resurce
 		}
-		return map;
+		return this.map;
 	}
 }

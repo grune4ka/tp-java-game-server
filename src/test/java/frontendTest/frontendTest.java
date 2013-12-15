@@ -6,6 +6,7 @@ import frontend.Frontend;
 import gameMechanics.GameSessionSnapshot;
 import helpers.CookieHelper;
 import helpers.TemplateHelper;
+import helpers.TimeHelper;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.testng.Assert;
@@ -96,7 +97,7 @@ public class frontendTest {
         frontend.updateUserId(sessionId, userIdIncorrect, nick);
         Assert.assertSame(Integer.valueOf(frontend.getSessionInformation().get(sessionId)), -3);
         Assert.assertEquals(frontend.getUserNameById().get(userId), nick);
-        //попробовать передать вместо входа везде null
+        
     }
 
     @Test
@@ -221,12 +222,24 @@ public class frontendTest {
         when(baseRequestPositive.getCookies()).thenReturn(cookie);
         when(templateHelper.renderTemplate("index.html", "Vasya", responsePositive.getWriter())).thenReturn(true);
         frontend.handle(targetRoot, baseRequestPositive, requestPositive, responsePositive);
+        verify(responsePositive).setContentType("text/html;charset=utf-8");
+        verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
+        verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
         frontend.updateUserId("1a", 1, null);
         when(baseRequestNegative.getCookies()).thenReturn(cookie);
         when(templateHelper.renderTemplate("index.html",  responseNegative.getWriter())).thenReturn(false);
 
         frontend.handle(targetRoot,baseRequestNegative, requestNegative, responseNegative);
+        verify(responseNegative).setContentType("text/html;charset=utf-8");
+        verify(responseNegative).setStatus(HttpServletResponse.SC_OK);
+        verify(responseNegative).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responseNegative).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestNegative).setHandled(true);
         Assert.assertFalse(frontend.IsHandled);
 
     }
@@ -235,23 +248,54 @@ public class frontendTest {
     public void handleJoinTest() throws IOException, ServletException{
         Cookie[] cookie =  new Cookie[1];
         cookie[0] = new Cookie("sessionId", "1a");
-        when(requestPositive.getCookies()).thenReturn(cookie);
-        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
-        Assert.assertTrue(frontend.IsHandled);
-        frontend.addSession("1a");
-        frontend.updateUserId("1a", 1, "Vasya");
-        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
-        Assert.assertTrue(frontend.IsHandled);
-        Map<String, Boolean> map = new HashMap<String, Boolean>();
-        map.put("alreadyJoin", true);
 
-        when(templateHelper.renderTemplate("join.html", response.getWriter())).thenReturn(true);
-        when(templateHelper.renderTemplate("join.html", map, response.getWriter())).thenReturn(true);
-       /* when(templateHelper.renderTemplate("join.html", anyMap(), response.getWriter())).thenReturn(true);
-        when(templateHelper.renderTemplate("join.html", response.getWriter())).thenReturn(true);
-        when(templateHelper.renderTemplate("waitAuth.html", response.getWriter())).thenReturn(true);
-        when(templateHelper.renderTemplate("waitAuth.html", response.getWriter())).thenReturn(true);
-*/
+        Map<String, Boolean> alreadyJoinMap = new HashMap<String, Boolean>();
+        alreadyJoinMap.put("alreadyJoin", true);
+
+        Map<String, Boolean> wrongDataMap = new HashMap<String, Boolean>();
+        alreadyJoinMap.put("wrongData", true);
+
+        when(requestPositive.getCookies()).thenReturn(cookie);
+
+        when(templateHelper.renderTemplate("join.html", responsePositive.getWriter())).thenReturn(true);
+        when(templateHelper.renderTemplate("join.html", alreadyJoinMap, responsePositive.getWriter())).thenReturn(true);
+        when(templateHelper.renderTemplate("join.html", wrongDataMap, responsePositive.getWriter())).thenReturn(true);
+        when(templateHelper.renderTemplate("join.html", responsePositive.getWriter())).thenReturn(true);
+        when(templateHelper.renderTemplate("waitAuth.html", responsePositive.getWriter())).thenReturn(true);
+
+
+        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
+        verify(responsePositive).setContentType("text/html;charset=utf-8");
+        verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
+        verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestPositive).setHandled(true);
+        Assert.assertTrue(frontend.IsHandled);
+
+        frontend.addSession("1a");
+        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
+        Assert.assertTrue(frontend.IsHandled);
+
+       frontend.updateUserId("1a", 1, "Vasya");
+        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
+        Assert.assertTrue(frontend.IsHandled);
+
+       /*// frontend.updateUserId("1a", 1, "Vasya");
+        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
+        Assert.assertTrue(frontend.IsHandled);*/
+
+        /*frontend.updateUserId("1a", -1, "Vasya");
+        frontend.handle(targetJoin, baseRequestPositive, requestPositive, responsePositive);
+        Assert.assertTrue(frontend.IsHandled);*/
+
+
+
+
+
+
+
+
 
         //позитивный тест, есть ид сессии, сессия активна
 
@@ -267,10 +311,10 @@ public class frontendTest {
 
     @Test
     public void handleIsJoinTest() throws IOException, ServletException {
-       /* frontend.addSession("1a");
+        frontend.addSession("1a");
         Cookie[] cookie1 =  new Cookie[1];
         cookie1[0] = new Cookie("sessionId", "1a");
-        when(baseRequest.getCookies()).thenReturn("1a");*/
+        //when(baseRequest.getCookies()).thenReturn("1a");
         //позитивный тест, ид сессии не нулл, сессия активна, есть ид юзера>0
         //позитивный тест, ид сессии не нулл, сессия активна, доступ запрещен ,-3
         //позитивный тест, ид сессии не нулл, сессия активна,  уже присоединен, -4
@@ -310,7 +354,7 @@ public class frontendTest {
         HttpServletRequest requestPositive2 = mock(HttpServletRequest.class);
         HttpServletResponse responsePositive2 = mock(HttpServletResponse.class);
         when(frontend.gameSessionSnapshotsByIndex(0).hasUser(userId3)).thenReturn(false);
-*/
+/*/
         //frontend.handle(targetGame, baseRequestPositive, requestPositive, responsePositive);
         //Assert.assertTrue(frontend.IsHandled);
 
@@ -350,6 +394,12 @@ public class frontendTest {
         when(frontend.gameSessionSnapshotsByIndex(0).hasUser(userId2)).thenReturn(true);
         when(frontend.gameSessionSnapshotsByIndex(0).haveFreeSlots()).thenReturn(false);
         frontend.handle(targetIsGameActive, baseRequestPositive,requestPositive, responsePositive);
+        verify(responsePositive).setContentType("text/html;charset=utf-8");
+        verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
+        verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
         //frontend.handle(targetIsGameActive, baseRequestNegative,requestNegative, responseNegative);
         //Assert.assertTrue(frontend.IsHandled);
@@ -368,6 +418,12 @@ public class frontendTest {
         when(requestNegative.getParameter("boardPos")).thenReturn("50");
 
         frontend.handle(targetUpdateGameData, baseRequestPositive, requestPositive, responsePositive);
+        verify(responsePositive).setContentType("text/html;charset=utf-8");
+        verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
+        verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
 
         frontend.updateUserId("1a", 0, "Vasya");
@@ -389,6 +445,12 @@ public class frontendTest {
         when(templateHelper.renderTemplate("results.html", frontend.userNameByRequest(baseRequestPositive), frontend.results, responsePositive.getWriter())).thenReturn(true);
         when(templateHelper.renderTemplate("results.html", frontend.userNameByRequest(baseRequestNegative), frontend.results, responseNegative.getWriter())).thenReturn(true);
         frontend.handle(targetResults, baseRequestPositive, requestPositive, responsePositive);
+        verify(responsePositive).setContentType("text/html;charset=utf-8");
+        verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
+        verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
 
         frontend.handle(targetResults,baseRequestNegative, requestNegative, responseNegative);
@@ -403,6 +465,12 @@ public class frontendTest {
         when(baseRequest.getCookies()).thenReturn(cookie);
         when(templateHelper.renderTemplate("index.html", response.getWriter())).thenReturn(true);
         frontend.handle(targetLogout, baseRequest, request,response);
+        verify(response).setContentType("text/html;charset=utf-8");
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+        verify(response).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        verify(response).setHeader("Expires", TimeHelper.getGMT());
+
+        verify(baseRequest).setHandled(true);
         Assert.assertFalse(frontend.IsHandled);
 
         frontend.addSession("1a");
