@@ -105,17 +105,17 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 						userId));
 	}
 	
-	private boolean isBothUserInGame(int userId) {
-		for(int i = 0; i < this.gameSessionSnapshotsLength(); i++) {
-			if (gameSessionSnapshotsByIndex(i).hasUser(userId) == true
-					&& !gameSessionSnapshotsByIndex(i).haveFreeSlots()) {
+	public boolean isBothUserInGame(int userId) {
+		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
+			if (this.gameSessionSnapshots[i].hasUser(userId) == true
+					&& !this.gameSessionSnapshots[i].haveFreeSlots()) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	private boolean isUserJoinInGameSession(int userId) {
+	public boolean isUserJoinInGameSession(int userId) {
 		for(int i = 0; i < this.gameSessionSnapshots.length; i++) {
 			if (this.gameSessionSnapshots[i].hasUser(userId) == true) {
 				return true;
@@ -182,8 +182,8 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	public GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
 		try {
             for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
-			    if (gameSessionSnapshotsByIndex(i).hasUser(userId)) {
-				    return gameSessionSnapshotsByIndex(i);
+			    if (this.gameSessionSnapshots[i].hasUser(userId)) {
+				    return this.gameSessionSnapshots[i];
 			    }
 		    }
         } catch (NullPointerException e){
@@ -276,7 +276,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                 try{
                     response.sendRedirect("/");
                 } catch (Exception e){
-                    e.printStackTrace();
+
                 }
                 IsHandled = true;
                 return;
@@ -285,13 +285,14 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                 Map<String, Boolean> map = new HashMap<String, Boolean>();
                 map.put("alreadyJoin", true);
                 this.sessionInformation.put(sessionId, -2);
-                //IsHandled = true;
-                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                IsHandled = true;
             }
             else if (this.userIdBySessionId(sessionId) == -3) {
                 Map<String, Boolean> map = new HashMap<String, Boolean>();
                 map.put("wrongData", true);
-                IsHandled = TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                TemplateHelp.renderTemplate("join.html", map, response.getWriter());
+                IsHandled = true;
                 this.sessionInformation.put(sessionId, -2);
             }
             else if (this.userIdBySessionId(sessionId) == -2) {
@@ -327,9 +328,12 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                 }
             }
         }
-        obj.put("isJoin", isJoin);
-        response.getWriter().print(obj);
+        try{
+            obj.put("isJoin", isJoin);
+            response.getWriter().print(obj);
+        } catch (Exception e){
 
+        }
         IsHandled = isJoin;
     }
 
@@ -341,17 +345,13 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         int userId = this.userIdByRequest(baseRequest);
         if (userId > 0) {
             if (this.isBothUserInGame(userId) == true) {
-                IsHandled = TemplateHelp.renderTemplate("game.html",
-                        this.userNameById(userId),
-                        response.getWriter());
+                IsHandled = TemplateHelp.renderTemplate("game.html",this.userNameById(userId),response.getWriter());
             }
             else {
                 if (!this.isUserJoinInGameSession(userId)) {
                     this.connectUserToGame(userId);
                 }
-                IsHandled = TemplateHelp.renderTemplate("wait.html",
-                        this.userNameById(userId),
-                        response.getWriter());
+                IsHandled = TemplateHelp.renderTemplate("wait.html",this.userNameById(userId),response.getWriter());
             }
         }
         else {
