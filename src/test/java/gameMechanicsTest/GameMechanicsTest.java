@@ -61,13 +61,14 @@ public class GameMechanicsTest {
     public void doActTest(){
         gameMechanics.addUserToGame(1,gameSessionId1);
         when(gameSessionId1.canRemove()).thenReturn(true);
-        gameMechanics.doAct();
+        Assert.assertEquals(gameMechanics.getGameSessionsSize(), 1);
+        gameMechanics.nextGamesTicks();
         Assert.assertEquals(gameMechanics.getGameSessionsSize(), 0);
 
-        gameMechanics.addUserToGame(2,gameSessionId1);
-        when(gameSessionId1.canRemove()).thenReturn(false);
-        gameMechanics.doAct();
-        verify(gameSessionId1).nextTick();
-
+        gameMechanics.addUserToGame(2,gameSessionId2);
+        when(gameSessionId2.canRemove()).thenReturn(false);
+        gameMechanics.nextGamesTicks();
+        Assert.assertEquals(gameMechanics.getGameSessionsSize(), 1);
+        verify(gameSessionId2).nextTick();
     }
 }

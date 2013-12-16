@@ -354,7 +354,7 @@ public class frontendTest {
     }
 
     @Test
-    public void updateGameDataTest() throws IOException, ServletException{
+    public void updateGameDataTest() throws IOException, ServletException, NullPointerException{
         Cookie[] cookie =  new Cookie[1];
         cookie[0] = new Cookie("sessionId", "1a");
         frontend.addSession("1a");

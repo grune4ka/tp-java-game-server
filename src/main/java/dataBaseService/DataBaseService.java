@@ -65,7 +65,8 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 
 	
 	public UserDataSet getUDSByLP(String login, String password) throws SQLException {
-		StringBuilder query = new StringBuilder();
+
+        StringBuilder query = new StringBuilder();
 		query
 		.append("SELECT * FROM users WHERE login = ")
 		.append("'"+ login + "'")

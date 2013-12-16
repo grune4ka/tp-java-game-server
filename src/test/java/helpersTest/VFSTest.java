@@ -5,6 +5,8 @@ import helpers.VFS;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.FileNotFoundException;
+
 public class VFSTest {
     private VFS vfs = new VFS();
 
@@ -14,7 +16,7 @@ public class VFSTest {
     }
 
     @Test
-    public void isDirectory(){
+    public void isDirectory()throws FileNotFoundException{
         Assert.assertEquals(vfs.isDirectory("/"), true);
     }
 
@@ -25,7 +27,7 @@ public class VFSTest {
     }
 
     @Test
-    public void writeToToFileTest(){
+    public void writeToToFileTest() throws FileNotFoundException{
         vfs.writeToFile( "<test_data></test_data>", "/test.xml");
         Assert.assertNotNull(vfs.getBytes("/settings/game_settings.xml"));
     }

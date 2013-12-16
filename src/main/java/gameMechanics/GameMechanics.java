@@ -62,7 +62,7 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 		return gameSessionSnapshotArray;
 	}
 	
-	private void nextGamesTicks() {
+	public void nextGamesTicks() {
 		for(int i = 0; i < this.gameSessions.size(); i++) {
 			if (this.gameSessions.get(i).canRemove()) {
 				this.gameSessions.remove(i);
@@ -77,26 +77,17 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 	}
 	
 	public void run() {
-		while (true) { 
-			doAct();
-		}
-	}
-
-    public boolean doAct(){
-        try{
+		while (true) {
             MessageSystem.execForAbonent(this);
 
             MsgUpdateGamersStatus msg = new MsgUpdateGamersStatus(this.address,
-                AddressService.getAddressByServiceName("Frontend"),
-                this.getGameSessionSnapshotArray());
+                    AddressService.getAddressByServiceName("Frontend"),
+                    this.getGameSessionSnapshotArray());
             MessageSystem.sendMessage(msg);
             this.nextGamesTicks();
             TimeHelper.sleep(10);
-            return true;
-        } catch (Exception e){
-            return false;
-        }
-    }
+		}
+	}
 
     public GameSession getGameSessionLast(){
         return gameSessions.lastElement();
