@@ -1,7 +1,7 @@
 package helpersTest;
 
 import helpers.CookieHelper;
-import org.mockito.stubbing.OngoingStubbing;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

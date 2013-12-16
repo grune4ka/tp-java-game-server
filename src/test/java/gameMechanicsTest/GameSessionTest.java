@@ -4,10 +4,8 @@ import gameMechanics.GameSession;
 import gameMechanics.GameSessionSnapshot;
 import gameMechanics.Gamer;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import sun.org.mozilla.javascript.ast.TryStatement;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;

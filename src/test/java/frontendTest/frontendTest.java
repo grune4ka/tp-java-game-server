@@ -9,8 +9,6 @@ import helpers.CookieHelper;
 import helpers.TemplateHelper;
 import helpers.TimeHelper;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.SessionIdManager;
-import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,8 +24,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.eclipse.jetty.util.LazyList.add;
-import static org.mockito.Matchers.anyMap;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
