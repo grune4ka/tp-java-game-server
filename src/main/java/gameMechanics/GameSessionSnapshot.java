@@ -72,7 +72,8 @@ public class GameSessionSnapshot {
 	public boolean getSessionFinish() {
 		return this.finish;
 	}
-	public boolean hasUser(int id) {
+
+    public boolean hasUser(int id) {
 		return (id == idGamer1) || (id == idGamer2);
 	}
 	public boolean haveFreeSlots() {

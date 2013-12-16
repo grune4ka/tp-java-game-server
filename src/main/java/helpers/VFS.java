@@ -13,10 +13,6 @@ public class VFS {
 		return (new File(root+path)).isDirectory();
 	}
 	
-	public static String getAbsolutePath(String path) {
-		return root+path;
-	}
-	
 	public static byte[] getBytes(String path) {
         byte[] buffer = null;
         String currentLineString;
@@ -45,8 +41,6 @@ public class VFS {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
         return buffer;
 

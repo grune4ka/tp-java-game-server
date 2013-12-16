@@ -25,4 +25,20 @@ public class UserDataSet {
 	public String getNick() {
 		return this.nick;
 	}
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -47,8 +47,24 @@ public class GameSessionSnapshotTest {
         this.map.put("ballXPos","30");
         this.map.put("ballYPos", "450");
         Assert.assertEquals(gameSessionSnapshotActive.getHashMapByUserId(2), map);
-
-
-
     }
+
+    @Test
+    public void getPositionTest(){
+        Assert.assertEquals(gameSessionSnapshotActive.getBallPositionX(), 30);
+        Assert.assertEquals(gameSessionSnapshotActive.getBallPositionY(), 30);
+    }
+
+    @Test
+    public void getActivityTest(){
+        Assert.assertEquals(gameSessionSnapshotActive.getSessionActive(), true);
+        Assert.assertEquals(gameSessionSnapshotActive.getSessionFinish(), false);
+    }
+
+    @Test
+    public void hasUserTest(){
+        Assert.assertTrue(gameSessionSnapshotActive.hasUser(1));
+        Assert.assertFalse(gameSessionSnapshotActive.haveFreeSlots());
+    }
+
 }

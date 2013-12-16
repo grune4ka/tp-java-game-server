@@ -2,11 +2,9 @@ package dataBaseService;
 
 import helpers.TimeHelper;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Map;
+import java.util.Properties;
 
 import messageSystem.MessageSystem;
 import modules.Abonent;
@@ -17,9 +15,14 @@ import dataBaseService.users.UsersDAO;
 public class DataBaseService implements Abonent, Runnable, UsersDAO{
 	private Address address;
 	private Connection connection;
+    private UserDataSet user = new UserDataSet(-1, "", "", "");
+    Executor executor= new Executor();
+
 	public DataBaseService() {
 		this.address = new Address("DataBaseService");
 		MessageSystem.addService(this);
+
+
 	}
 	
 	public void run() {
@@ -60,7 +63,8 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		.append(", ")
 		.append(user.getNick())
 		.append(");");
-		Executor.execUpdate(connection, query.toString());	
+        //Executor executor= new Executor();
+		executor.execUpdate(connection, query.toString());
 	}
 
 	
@@ -73,8 +77,8 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		.append(" AND password = ")
 		.append("'" + password + "'")
 		.append(";");
-				
-		UserDataSet user = Executor.execQuery(connection, query.toString(), new ResultHandler <UserDataSet>(){
+		//Executor executor= new Executor();
+		executor.execQuery(this.connection, query.toString(), new ResultHandler <UserDataSet>(){
 				
 				public UserDataSet handle(ResultSet result) throws SQLException {
 					if (result.next()) {
@@ -82,15 +86,34 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 						String login = result.getString("login");
 						String password = result.getString("password");
 						String nick = result.getString("nick");
-						return new UserDataSet(id, login, password, nick);
+						user.setId(id);
+                        user.setLogin( login);
+                        user.setPassword(password);
+                        user.setNick(nick);
+                        return user;
 					}
 					else {
-						return new UserDataSet(-3, "", "", "");
-					}
+                        user.setId(-3);
+                        user.setLogin("");
+                        user.setPassword("");
+                        user.setNick("");
+                        return user;
+                    }
 					
 				}
 			});
 		return user;
 	}
 
+    public void setConnection(Connection connection){
+        this.connection = connection;
+    }
+
+    public void setUser(UserDataSet user) {
+        this.user = user;
+    }
+
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
 }

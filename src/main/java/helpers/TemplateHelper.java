@@ -5,68 +5,51 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import frontend.Frontend;
 
 public class TemplateHelper {
-	//private static Configuration cfg = new Configuration();
-    private static Configuration cfg;// = new Configuration();
+
+    private static Configuration cfg;
+    private Template template;
 
     public TemplateHelper(Configuration cfg){
         this.cfg = cfg;
+        this.template = null;
     }
     public static void init() {
 			try {
 				cfg.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/templates"));				
 			} catch (IOException e) {
-				e.printStackTrace();
-				Logger logger = Logger.getLogger(Frontend.class.toString());
-				logger.info("Can't find folder with templates. Shutting down...");
 				System.exit(404);
 			}
 			
 	}
 	
-	public static Template getTemplate(String name) {
-		Template template = null;
-		try {
-			template = cfg.getTemplate(name);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return template;
-	}
-
-    public boolean renderTemplate(String name, Writer out) {
+	public boolean renderTemplate(String name, Writer out) {
         try {
-            Template template = cfg.getTemplate(name);
+            template = cfg.getTemplate(name);
             template.process(null, out);
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e){
+            return false;
         }
-        return false;
+
     }
 
     public boolean renderTemplate(String name, Map map_arg, Writer out) {
-        Template template;
         try {
             template = cfg.getTemplate(name);
-            Map map = new HashMap();
-            map.putAll(map_arg);
-            template.process(map, out);
+            template.process(map_arg, out);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        return true;
+
     }
 
     public boolean renderTemplate(String name, String userName, Writer out) {
-        Template template;
         try {
             template = cfg.getTemplate(name);
             Map<String, String> map = new  HashMap<String, String>();
@@ -74,13 +57,12 @@ public class TemplateHelper {
             template.process(map, out);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        return true;
+
     }
 
     public boolean renderTemplate(String name, String userName, Map map_arg, Writer out) {
-        Template template;
         try {
             template = cfg.getTemplate(name);
             Map map = new  HashMap();
@@ -89,8 +71,7 @@ public class TemplateHelper {
             template.process(map, out);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        return true;
     }
 }
