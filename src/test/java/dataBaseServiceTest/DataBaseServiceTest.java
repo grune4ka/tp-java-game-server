@@ -83,6 +83,8 @@ public class DataBaseServiceTest {
     public void addUDSTest() throws SQLException{
         dataBaseService.setExecutor(executor);
         dataBaseService.setConnection(conn);
-        verify(executor).execUpdate(conn, anyString());
+//        verify(executor).execUpdate(conn, anyString());
+        verify(executor).execUpdate(conn, org.mockito.Mockito.eq("insert"));
     }
+
 }
