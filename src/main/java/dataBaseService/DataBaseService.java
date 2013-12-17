@@ -63,7 +63,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		.append(", ")
 		.append(user.getNick())
 		.append(");");
-        //Executor executor= new Executor();
+
 		executor.execUpdate(connection, query.toString());
 	}
 
@@ -77,7 +77,7 @@ public class DataBaseService implements Abonent, Runnable, UsersDAO{
 		.append(" AND password = ")
 		.append("'" + password + "'")
 		.append(";");
-		//Executor executor= new Executor();
+
 		executor.execQuery(this.connection, query.toString(), new ResultHandler <UserDataSet>(){
 				
 				public UserDataSet handle(ResultSet result) throws SQLException {

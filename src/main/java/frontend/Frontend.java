@@ -180,16 +180,12 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 	}
 	
 	public GameSessionSnapshot getGameSessionSnapshotByUserId(int userId) {
-		try {
-            for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
-			    if (this.gameSessionSnapshots[i].hasUser(userId)) {
-				    return this.gameSessionSnapshots[i];
-			    }
-		    }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-        }
-		return null;
+		for(int i = 0; i < gameSessionSnapshotsLength(); i++) {
+			if (this.gameSessionSnapshots[i].hasUser(userId)) {
+				return this.gameSessionSnapshots[i];
+			}
+		}
+        return null;
 	}
 
     public void handle(String target, Request baseRequest,
@@ -328,12 +324,10 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                 }
             }
         }
-        try{
-            obj.put("isJoin", isJoin);
-            response.getWriter().print(obj);
-        } catch (Exception e){
 
-        }
+        obj.put("isJoin", isJoin);
+        response.getWriter().print(obj);
+
         IsHandled = isJoin;
     }
 
@@ -355,7 +349,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
             }
         }
         else {
-            //response.sendRedirect("/join");
+            response.sendRedirect("/join");
             return;
         }
 
@@ -374,7 +368,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 
         if(isGameActive){
             obj.put("isGameActive", isGameActive);
-            //response.getWriter().print(obj);
+            response.getWriter().print(obj);
             IsHandled = true;
         } else {
             return;
@@ -399,22 +393,17 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                     AddressService.getAddressByServiceName("GameMechanics"),
                     userId, intBoardPosition);
                 MessageSystem.sendMessage(msg);
-            } catch (NullPointerException e){
-                e.printStackTrace();
+            } catch (Exception e){
+                
             }
         } else {
             return;
         }
 
         GameSessionSnapshot snapshot = this.getGameSessionSnapshotByUserId(userId);
-        try{
-            JSONObject obj = new JSONObject();
-            obj.putAll(snapshot.getHashMapByUserId(userId));
-            response.getWriter().print(obj);
-        } catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
+        JSONObject obj = new JSONObject();
+        obj.putAll(snapshot.getHashMapByUserId(userId));
+        response.getWriter().print(obj);
         IsHandled = true;
     }
 
@@ -431,7 +420,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
         if (enemyPoints == null) {
             enemyPoints = "";
         }
-        //HashMap<String, String> results = new HashMap<String, String>();
+
         this.results.put("me", mePoints);
         this.results.put("enemy", enemyPoints);
         IsHandled = TemplateHelp.renderTemplate("results.html", userNameByRequest(baseRequest), this.results, response.getWriter());
@@ -489,6 +478,10 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 
     public GameSessionSnapshot gameSessionSnapshotsByIndex(int i){
         return  gameSessionSnapshots[i];
+    }
+
+    public void setAddress(Address address){
+        this.address = address;
     }
 
 

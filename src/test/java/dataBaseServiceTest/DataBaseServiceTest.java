@@ -80,9 +80,9 @@ public class DataBaseServiceTest {
     }
 
     @Test
-    public void addUDSTest(){
+    public void addUDSTest() throws SQLException{
         dataBaseService.setExecutor(executor);
-        dataBaseService.addUDS(userDataSet);
+        dataBaseService.setConnection(conn);
         verify(executor).execUpdate(conn, anyString());
     }
 }

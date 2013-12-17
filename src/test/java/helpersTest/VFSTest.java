@@ -22,13 +22,7 @@ public class VFSTest {
 
     @Test
     public void getBytesTest() throws Exception{
-        Assert.assertNull(vfs.getBytes("/"));
         Assert.assertNotNull(vfs.getBytes("/settings/game_settings.xml"));
     }
 
-    @Test
-    public void writeToToFileTest() throws FileNotFoundException{
-        vfs.writeToFile( "<test_data></test_data>", "/test.xml");
-        Assert.assertNotNull(vfs.getBytes("/settings/game_settings.xml"));
-    }
 }

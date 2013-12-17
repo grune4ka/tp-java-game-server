@@ -16,17 +16,19 @@ public class CookieHelperTest {
     private Cookie cookies;
     private CookieHelper helper;
     private String key="password";
-
+    private Cookie[] cookie;
     @BeforeClass
     public void setUp(){
         cookies = mock(Cookie.class);
-        //when(cookies.length).thenReturn(2);   //не массив!
         helper = new CookieHelper();
+        cookie =  new Cookie[1];
+        cookie[0] = new Cookie("sessionId", "1a");
     }
 
     @Test
     public void getStringCookieTest(){
         Assert.assertEquals(helper.getCookie(null,key), null);
+        Assert.assertEquals(helper.getCookie(cookie, "sessionId"), "1a");
 
     }
 }

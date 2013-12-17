@@ -15,19 +15,7 @@ public class AddressService {
 			return null;
 		}
 	}
-	
-	/*public static String getServiceNameByAddress(Address address) {
-		if (addressMap.containsValue(address)) {
-			for (Iterator<String> i = addressMap.keySet().iterator(); i.hasNext();) {
-				String currentElement;
-				if (addressMap.get(currentElement = i.next())== address) {
-					return  currentElement;
-				}
-			}
-		}
-		return null;
-	}*/
-	
+
 	public static void addAddressOfService(String name, Address address) {
 		addressMap.put(name, address);
 	}

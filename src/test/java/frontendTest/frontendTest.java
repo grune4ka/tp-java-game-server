@@ -8,6 +8,7 @@ import gameMechanics.GameSessionSnapshot;
 import helpers.CookieHelper;
 import helpers.TemplateHelper;
 import helpers.TimeHelper;
+import modules.Address;
 import org.eclipse.jetty.server.Request;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class frontendTest {
     private Request baseRequestNegative;
     private HttpServletRequest requestNegative;
     private HttpServletResponse responseNegative;
-
+    private PrintWriter writer;
     private TemplateHelper templateHelper;
 
     @BeforeMethod
@@ -213,6 +215,8 @@ public class frontendTest {
         Assert.assertEquals(frontend.getGameSessionSnapshotByUserId(userId1), gameSessionSnapshot);
         Assert.assertNull(frontend.getGameSessionSnapshotByUserId(userId2));
 
+
+
     }
 
     @Test
@@ -315,6 +319,9 @@ public class frontendTest {
         frontend.updateUserId("1a", 1, "Vasya");
         Cookie[] cookie =  new Cookie[1];
         cookie[0] = new Cookie("sessionId", "1a");
+        writer = mock(PrintWriter.class);
+
+        when(responsePositive.getWriter()).thenReturn(writer);
         when(baseRequestPositive.getCookies()).thenReturn(cookie);
         frontend.handle(targetIsJoin, baseRequestPositive, requestPositive, responsePositive);
         Assert.assertTrue(frontend.IsHandled);
@@ -323,6 +330,9 @@ public class frontendTest {
 
     @Test
     public void isGameActiveTest() throws IOException, ServletException{
+        writer = mock(PrintWriter.class);
+
+        when(responsePositive.getWriter()).thenReturn(writer);
         Cookie[] cookie =  new Cookie[2];
         cookie[0] = new Cookie("sessionId", "1a");
         cookie[1] =new Cookie("sessionId", "2a");
@@ -364,11 +374,22 @@ public class frontendTest {
         when(requestPositive.getParameter("boardPos")).thenReturn("50");
         when(requestNegative.getParameter("boardPos")).thenReturn("50");
 
+        GameSessionSnapshot[] gameSessionSnapshots = new GameSessionSnapshot[1];
+        GameSessionSnapshot gameSessionSnapshot = mock(GameSessionSnapshot.class);
+        gameSessionSnapshots[0] = gameSessionSnapshot;
+        when(gameSessionSnapshot.hasUser(1)).thenReturn(true);
+        HashMap map = mock(HashMap.class);
+        when(gameSessionSnapshot.getHashMapByUserId(1)).thenReturn(map);
+        frontend.updateGameSessionSnapshots(gameSessionSnapshots);
+        writer = mock(PrintWriter.class);
+
+        when(responsePositive.getWriter()).thenReturn(writer);
+        Address address = mock(Address.class);
+        frontend.setAddress(address);
         frontend.handle(targetUpdateGameData, baseRequestPositive, requestPositive, responsePositive);
         verify(responsePositive).setContentType("text/html;charset=utf-8");
         verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
         verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        //verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
 
         verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);

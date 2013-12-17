@@ -37,11 +37,11 @@ public class GameSessionTest {
         Assert.assertEquals(gameSession.isWait(),false); //когда не выполняется вторая часть условия
         gameSession.setWaiter();
         try {
-            Thread.sleep(2000);
-            Assert.assertEquals(gameSession.isWait(),false); //когда не выполняется первая часть условия
+            Thread.sleep(1001);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Assert.assertEquals(gameSession.isWait(),false); //когда не выполняется первая часть условия
         gameSession.setWaiter();
         Assert.assertEquals(gameSession.isWait(), true); //когда условие полностью выполняется
 
@@ -139,34 +139,38 @@ public class GameSessionTest {
         gameSession.setBallXPosition(40);
         gameSession.setBallYPosition(20);
         try{
-            Thread.sleep(2000);
-            gameSession.nextTick();
+            Thread.sleep(1001);
+
         } catch (Exception e){
 
         }
+
+        gameSession.nextTick();
         Assert.assertEquals(gameSession.getBallXPosition(), 36);
         Assert.assertEquals(gameSession.getBallYPosition(), 24);
 
         gameSession.setBallXPosition(204);
         gameSession.setBallYPosition(574);
+
         try{
-            Thread.sleep(2000);
-            gameSession.nextTick();
+            Thread.sleep(1001);
+
         } catch (Exception e){
 
         }
-
+        gameSession.nextTick();
         Assert.assertEquals(gameSession.getBallXPosition(), 100);
         Assert.assertEquals(gameSession.getBallYPosition(), 320);
 
         gameSession.setBallXPosition(40);
         gameSession.setBallYPosition(574);
         try{
-            Thread.sleep(3000);
-            gameSession.nextTick();
+            Thread.sleep(1001);
+
         } catch (Exception e){
 
         }
+        gameSession.nextTick();
         Assert.assertEquals(gameSession.getBallXPosition(), 44);
         Assert.assertEquals(gameSession.getBallYPosition(), 570);
     }

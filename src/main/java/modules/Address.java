@@ -12,8 +12,5 @@ public class Address {
 		AddressService.addAddressOfService(nameService, this);
 	}
 
-	/*public int getAbonentId() {
-		return abonentId;
-	}*/
 }
 
