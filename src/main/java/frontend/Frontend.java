@@ -192,7 +192,6 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                           HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
@@ -263,17 +262,13 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
             Cookie[] cookie = new Cookie[1];
             cookie[0] = new Cookie("sessionId", target);
             cookie[0].setValue(sessionId);
-            //response.addCookie(cookie[0]);
+            response.addCookie(cookie[0]);
             this.addSession(sessionId);
             IsHandled = TemplateHelp.renderTemplate("join.html", response.getWriter());
 
         } else {
             if (this.userIdBySessionId(sessionId) > 0) {
-                try{
-                    response.sendRedirect("/");
-                } catch (Exception e){
-
-                }
+                response.sendRedirect("/");
                 IsHandled = true;
                 return;
             }
@@ -442,7 +437,7 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
                         System.out.println("Пользователь #"+id+" (Сессия " + sessionId+") вышел из системы");
                         userNameById.remove(id);
                         sessionInformation.remove(sessionId);
-                        //response.sendRedirect("/");
+                        response.sendRedirect("/");
                         IsHandled = TemplateHelp.renderTemplate("index.html", response.getWriter());
                         return;
                     }
@@ -466,10 +461,6 @@ public class Frontend extends AbstractHandler implements Abonent, Runnable,
 
     public HashMap<Integer, String> getUserNameById(){
         return userNameById;
-    }
-
-    public GameSessionSnapshot[] getGameSessionSnapshots(){
-        return gameSessionSnapshots;
     }
 
     public int gameSessionSnapshotsLength(){

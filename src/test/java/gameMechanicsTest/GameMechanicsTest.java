@@ -59,6 +59,7 @@ public class GameMechanicsTest {
 
     @Test
     public void doActTest(){
+        Assert.assertEquals(gameMechanics.getGameSessionsSize(),0);
         gameMechanics.addUserToGame(1,gameSessionId1);
         when(gameSessionId1.canRemove()).thenReturn(true);
         Assert.assertEquals(gameMechanics.getGameSessionsSize(), 1);
@@ -69,6 +70,10 @@ public class GameMechanicsTest {
         when(gameSessionId2.canRemove()).thenReturn(false);
         gameMechanics.nextGamesTicks();
         Assert.assertEquals(gameMechanics.getGameSessionsSize(), 1);
-        verify(gameSessionId2).nextTick();
+
+        gameMechanics.addUserToGame(1,gameSessionId1);
+        gameMechanics.addUserToGame(2,gameSessionId2);
+        gameMechanics.nextGamesTicks();
+        Assert.assertEquals(gameMechanics.getGameSessionsSize(), 2);
     }
 }

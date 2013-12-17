@@ -108,9 +108,11 @@ public class frontendTest {
         GameSessionSnapshot snapshot = mock(GameSessionSnapshot.class);
         gameSessionSnapshots[0] = snapshot;
         when(snapshot.hasUser(1)).thenReturn(true);
+        when(snapshot.hasUser(2)).thenReturn(false);
         when(snapshot.haveFreeSlots()).thenReturn(false);
         frontend.updateGameSessionSnapshots(gameSessionSnapshots);
         Assert.assertTrue(frontend.isBothUserInGame(1));
+        Assert.assertFalse(frontend.isBothUserInGame(2));
     }
 
     @Test
@@ -273,7 +275,7 @@ public class frontendTest {
         verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
         verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
-        verify(baseRequestPositive).setHandled(true);
+        //verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
 
         frontend.addSession("1a");

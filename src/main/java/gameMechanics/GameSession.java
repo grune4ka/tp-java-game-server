@@ -45,12 +45,13 @@ public class GameSession {
 		}
 	}
 
-	public void setWaiter() {
-		this.waiter = System.currentTimeMillis();
+	public void setWaiter(long timer) {
+        this.waiter = timer;
+        //this.waiter = System.currentTimeMillis();
 	}
 
-	public boolean isWait() {
-		if (System.currentTimeMillis() - this.waiter < this.settings.failWait
+	public boolean isWait(long timer) {
+		if (timer - this.waiter < this.settings.failWait
 				&& this.waiter != 0) {
 			return true;
 		} else {
@@ -157,8 +158,8 @@ public class GameSession {
 		return i;
 	}
 
-	public void nextTick() {
-		if (!this.haveFreeSlots() && !this.isGameEnd() && !this.isWait() ){
+	public void nextTick(long timer) {
+		if (!this.haveFreeSlots() && !this.isGameEnd() && !this.isWait(timer) ){
 			if (this.ballXPosition < 0
 					|| this.ballXPosition > this.settings.widthGameField) {
 				this.settings.vector[0] = -this.settings.vector[0];
@@ -173,7 +174,7 @@ public class GameSession {
 					this.gamer1.setPoints(this.gamer1.getPoints() + 1);
 					    this.ballXPosition = this.settings.widthGameField / 2;
 					    this.ballYPosition = this.settings.heigthGameField / 2;
-					    this.setWaiter();
+                        this.setWaiter(timer);
 					    return;
 
 				}
@@ -189,7 +190,7 @@ public class GameSession {
 					this.gamer2.setPoints(this.gamer2.getPoints() + 1);
 					    this.ballXPosition = this.settings.widthGameField / 2;
 					    this.ballYPosition = this.settings.heigthGameField / 2;
-					    this.setWaiter();
+					    this.setWaiter(timer);
 					    return;
                     }
 
@@ -224,4 +225,7 @@ public class GameSession {
         return this.ballYPosition;
     }
 
+    public void setFinishTime(long finishTime) {
+        this.finishTime = finishTime;
+    }
 }

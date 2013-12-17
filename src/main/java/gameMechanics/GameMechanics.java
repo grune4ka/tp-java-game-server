@@ -71,7 +71,8 @@ public class GameMechanics implements Abonent, Runnable, GameMechanicsInterface 
 				}
 			} 
 			else {
-				this.gameSessions.get(i).nextTick();
+				long timer = System.currentTimeMillis();
+                this.gameSessions.get(i).nextTick(timer);
 			}
 		}
 	}

@@ -29,21 +29,22 @@ public class GameSessionTest {
     @Test
     public void canRemoveTest(){
         Assert.assertEquals(gameSession.canRemove(), false);
+        gameSession.setFinishTime(1);
+        Assert.assertTrue(gameSession.canRemove());
 
     }
 
     @Test
     public void isWaitTest(){
-        Assert.assertEquals(gameSession.isWait(),false); //когда не выполняется вторая часть условия
-        gameSession.setWaiter();
-        try {
-            Thread.sleep(1001);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Assert.assertEquals(gameSession.isWait(),false); //когда не выполняется первая часть условия
-        gameSession.setWaiter();
-        Assert.assertEquals(gameSession.isWait(), true); //когда условие полностью выполняется
+        long timer = 10;
+        long timerFail = 1020;
+        Assert.assertEquals(gameSession.isWait(timer),false); //когда не выполняется вторая часть условия
+
+        gameSession.setWaiter(timer);
+
+        Assert.assertEquals(gameSession.isWait(timerFail),false); //когда не выполняется первая часть условия
+        gameSession.setWaiter(timer);
+        Assert.assertEquals(gameSession.isWait(timer), true); //когда условие полностью выполняется
 
     }
     @Test
@@ -128,49 +129,39 @@ public class GameSessionTest {
         when(gamer1.getPoints()).thenReturn(1);
         when(gamer2.getPoints()).thenReturn(1);
         //!isWait
-       gameSession.setBallXPosition(-10);
+        gameSession.setBallXPosition(-10);
         gameSession.setBallYPosition(10);
 
-        gameSession.nextTick();
+        long timer = 10;
+        long timerFail = 1020;
+        gameSession.nextTick(timer);
 
         Assert.assertEquals(gameSession.getBallXPosition(), 100);
         Assert.assertEquals(gameSession.getBallYPosition(), 320);
-
+        //один набор можно оставить для покрытия ветки else
         gameSession.setBallXPosition(40);
         gameSession.setBallYPosition(20);
-        try{
-            Thread.sleep(1001);
 
-        } catch (Exception e){
+        gameSession.nextTick(timer);
+        Assert.assertEquals(gameSession.getBallXPosition(), 40);
+        Assert.assertEquals(gameSession.getBallYPosition(), 20);
 
-        }
-
-        gameSession.nextTick();
+        gameSession.nextTick(timerFail);
         Assert.assertEquals(gameSession.getBallXPosition(), 36);
         Assert.assertEquals(gameSession.getBallYPosition(), 24);
 
         gameSession.setBallXPosition(204);
         gameSession.setBallYPosition(574);
 
-        try{
-            Thread.sleep(1001);
-
-        } catch (Exception e){
-
-        }
-        gameSession.nextTick();
+        gameSession.nextTick(timerFail);
         Assert.assertEquals(gameSession.getBallXPosition(), 100);
         Assert.assertEquals(gameSession.getBallYPosition(), 320);
 
         gameSession.setBallXPosition(40);
         gameSession.setBallYPosition(574);
-        try{
-            Thread.sleep(1001);
 
-        } catch (Exception e){
-
-        }
-        gameSession.nextTick();
+        gameSession.setWaiter(timer);
+        gameSession.nextTick(timerFail);
         Assert.assertEquals(gameSession.getBallXPosition(), 44);
         Assert.assertEquals(gameSession.getBallYPosition(), 570);
     }
