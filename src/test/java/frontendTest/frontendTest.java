@@ -416,7 +416,6 @@ public class frontendTest {
         verify(responsePositive).setContentType("text/html;charset=utf-8");
         verify(responsePositive).setStatus(HttpServletResponse.SC_OK);
         verify(responsePositive).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        //verify(responsePositive).setHeader("Expires", TimeHelper.getGMT());
 
         verify(baseRequestPositive).setHandled(true);
         Assert.assertTrue(frontend.IsHandled);
@@ -436,7 +435,6 @@ public class frontendTest {
         verify(response).setContentType("text/html;charset=utf-8");
         verify(response).setStatus(HttpServletResponse.SC_OK);
         verify(response).setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        //verify(response).setHeader("Expires", TimeHelper.getGMT());
 
         verify(baseRequest).setHandled(true);
         Assert.assertFalse(frontend.IsHandled);

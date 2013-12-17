@@ -33,10 +33,6 @@ public class MsgGetUserIdTest {
         msg = new MsgGetUserId(from, to,  "1a", "login", "password");
     }
 
-    @Test
-    public void execTest() throws SQLException{
-        //msg.exec(dataBaseService);
-        //verify(dataBaseService).getUDSByLP("login", "password");
-    }
+
 }
 

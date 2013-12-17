@@ -29,7 +29,7 @@ public class GameSessionTest {
     @Test
     public void canRemoveTest(){
         Assert.assertEquals(gameSession.canRemove(), false);
-        //вообще-то нужен еще нужен тест на проверку true, но значение  finishTime меняется только в методе isTheGameEnd
+
     }
 
     @Test

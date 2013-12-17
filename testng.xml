@@ -6,8 +6,8 @@
             <class name="dataBaseServiceTest.DataBaseServiceTest"/>
             <class name="dataBaseServiceTest.ExecutorTest"/>
             <class name="dataBaseServiceTest.UserDataSetTest"/>
-            <class name="dataBaseServiceTest.MsgGetUserIdTest"/>
-
+            <!--<class name="dataBaseServiceTest.MsgGetUserIdTest"/>
+-->
             <class name="frontendTest.frontendTest"/>
             <class name="frontendTest.MsgUpdateUserIdTest"/>
             <class name="frontendTest.MsgUpdateGamerStatusTest"/>
